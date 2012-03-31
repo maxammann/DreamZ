@@ -1,0 +1,71 @@
+Global:
+    Delay: 2                 # Delay until you get teleported
+    Debugging: true          # Default: false
+    DefaultReturnWorld: Main
+    DefaultRescueHealth: 10  # 10 health equals 5 hearts
+    canEscapeThrowBed: true  # Can the player escape throw a bed?
+    preventSpawnOn: [LAVA, FIRE, AIR, WATER, CACTUS, LEAVES, BEDROCK, STATIONARY_LAVA]
+    UsingDamageExit: true    # Can you exit a dream, when you reach the DefaultRescueHealth limit?
+    UsingThisWorldCreator: true
+    ClearInventory: true
+    SaveInventory: true
+DreamWorld:
+    Enabled: true            # Is the dreamworld enabled?
+    Generation:
+        Name: dreamworld         # Name of the dreamworld
+        Type: NORMAL             # NORMAL, NETHER or THE_END
+        Generator: SkylandsPlus      # Generator of another plugin
+        Seed: 123456789          # Seed for the world.
+    Chance: 50               # Chance to enter dreamworld.
+    UsingDuration: true      # Using duration to get back?
+    Duration: 60             # How long you'll stay in dreamworld (in secounds)
+    Thundering: false        # Thundering in the dreamworld?
+    Storm: false             # Storm in the dreamworld?
+    PassiveMonsters: true    # Should the agressive mobs be passice
+    FlyMultiplier: 1
+    Spawning:
+        RespawnInDream: true
+        RespawnAtDeathPoint: false
+        UseRandomSpawn: true     # Use a random spawn.
+        SpawnArea:               # Spawnarea for randomSpawn.
+            MaxX: 100
+            MinX: -100
+            MaxZ: 100
+            MinZ: -100
+    Bed:                     # The Bed to escape
+        X: 0
+        Y: 70
+        Z: 0
+NightMare:
+    Enabled: true            # Is the dreamworld enabled?
+    Generation:
+        Name: nightmare          # Name of the dreamworld
+        Type: NETHER             # NORMAL, NETHER or THE_END
+        Generator: DEFAULT       # Generator of another plugin
+        Seed: 123456789          # Seed for the world.
+    Chance: 50               # Chance to enter nightmare.
+    UsingDuration: true      # Using duration to get back?
+    Duration: 60             # How long you'll stay in dreamworld (in secounds)
+    Thundering: true         # Thundering in the nightmare?
+    Storm: true              # Storm in the dreamworld?
+    PassiveMonsters: false   # Should the agressive mobs be passice
+    FlyMultiplier: 0
+    Spawning:
+        RespawnInDream: true
+        RespawnAtDeathPoint: false
+        UseRandomSpawn: true     # Use a random spawn.
+        SpawnArea:               # Spawnarea for randomSpawn.
+            MaxX: 100
+            MinX: -100
+            MaxZ: 100
+            MinZ: -100
+    Bed:                     # The Bed to escape
+        X: 0
+        Y: 70
+        Z: 0
+Messages:
+    CantEscapeMessage: '&4 You cant escape!'
+    EnterDreamWorldMessage: '&4 You entered the Dreamworld!'
+    EnterNightMareMessage: '&4 You entered the Nightmare!'
+    LeaveMessage: '&4 You left the dream!'
+    DamageEscapeMessage: '&4 Puhhh, this was close!'

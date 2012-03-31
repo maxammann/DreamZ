@@ -1,0 +1,51 @@
+author: p000ison
+database: false
+description: Allows you to enter a DreamWorld/NightMareWorld.
+main: me.p000ison.dreamz.DreamZ
+name: DreamZ
+startup: postworld
+url: http://dev.bukkit.org/server-mods/DreamZ/
+version: '0.1.5'
+commands:
+  dreamz:
+    description: Basic Command.
+    usage: /<command>
+permissions:
+  dreamz.enter:
+    description: tmp
+  dreamz.command.reload:
+    description: tmp
+  dreamz.command.dwbed:
+    description: tmp
+  dreamz.command.nmbed:
+    description: tmp
+  dreamz.command.wakeup:
+    description: tmp
+  dreamz.command.sleep:
+    description: tmp
+  dreamz.escape.damage:
+    description: tmp
+  dreamz.fly:
+    description: tmp
+  dreamz.join.noteleportback:
+    description: tmp
+    default: false
+  dreamz.admin.*:
+    description: tmp
+    default: op
+    children:
+      dreamz.enter: true
+      dreamz.command.reload: true
+      dreamz.command.dwbed: true
+      dreamz.command.nmbed: true
+      dreamz.command.wakeup: true
+      dreamz.command.sleep: true
+      dreamz.escape.damage: true
+      dreamz.fly: true
+  dreamz.user.*:
+    description: tmp
+    default: true
+    children:
+      dreamz.enter: true
+      dreamz.escape.damage: true
+      dreamz.fly: true
