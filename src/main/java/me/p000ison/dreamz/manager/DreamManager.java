@@ -98,7 +98,7 @@ public class DreamManager {
             }
         } else {
             event.setCancelled(true);
-            player.sendMessage(plugin.color(settings.getCantEscapeMessage()));
+            player.sendMessage(util.color(settings.getCantEscapeMessage()));
             if (settings.isDebugging() == true) {
                 plugin.getLogger().log(Level.INFO, "player tried to escape");
             }
@@ -170,16 +170,13 @@ public class DreamManager {
         switch (dtype) {
             case DREAMWORLD:
                 if (settings.isDreamWorldRandomSpawn()) {
-                    Location loc = util.randomLoc(settings.getDreamWorldMinX(), settings.getDreamWorldMaxX(), settings.getDreamWorldMinZ(), settings.getDreamWorldMaxZ(), plugin.getWorldManager().getDreamWorld());
-                    loc.setY(loc.getY() + 2);
-                    player.teleport(loc);
+                    player.teleport(util.randomLoc(plugin.getWorldManager().getDreamWorld()));
                     player.setNoDamageTicks(40);
-                    System.out.println(loc.toString());
                 } else {
                     player.teleport(plugin.getWorldManager().getDreamWorld().getSpawnLocation());
                     player.setNoDamageTicks(40);
                 }
-                player.sendMessage(plugin.color(settings.getEnterDreamWorldMessage()));
+                player.sendMessage(util.color(settings.getEnterDreamWorldMessage()));
                 plugin.getWorldManager().setWeather(settings.isDreamWorldThundering(), settings.isDreamWorldStorm(), plugin.getWorldManager().getNightMare());
                 if (settings.isDreamWorldUsingDuration()) {
                     startRetrunTimer(player, dtype);
@@ -187,13 +184,13 @@ public class DreamManager {
                 break;
             case NIGHTMARE:
                 if (settings.isNightMareRandomSpawn()) {
-                    player.teleport(util.randomLoc(settings.getNightMareMinX(), settings.getNightMareMaxX(), settings.getNightMareMinZ(), settings.getNightMareMaxZ(), plugin.getWorldManager().getNightMare()));
+                    player.teleport(util.randomLoc(plugin.getWorldManager().getNightMare()));
                     player.setNoDamageTicks(40);
                 } else {
                     player.teleport(plugin.getWorldManager().getNightMare().getSpawnLocation());
                     player.setNoDamageTicks(40);
                 }
-                player.sendMessage(plugin.color(settings.getEnterNightMareMessage()));
+                player.sendMessage(util.color(settings.getEnterNightMareMessage()));
                 plugin.getWorldManager().setWeather(settings.isNightMareThundering(), settings.isNightMareStorm(), plugin.getWorldManager().getNightMare());
                 if (settings.isNightMareUsingDuration()) {
                     startRetrunTimer(player, dtype);
@@ -201,6 +198,7 @@ public class DreamManager {
 
                 break;
         }
+        inv.clearInventory(player, dtype);
         inv.save(dtype, player);
     }
 
@@ -217,7 +215,7 @@ public class DreamManager {
             player.setHealth(player.getMaxHealth());
             player.setNoDamageTicks(100);
             player.setFallDistance(0);
-            player.sendMessage(plugin.color(settings.getLeaveMessage()));
+            player.sendMessage(util.color(settings.getLeaveMessage()));
         }
 
         if (plugin.schedulers.containsKey(player)) {

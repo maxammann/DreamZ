@@ -13,7 +13,6 @@ import me.p000ison.dreamz.manager.WorldManager;
 import me.p000ison.dreamz.util.Inventory;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -21,24 +20,24 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class DreamZ extends JavaPlugin {
 
+    private static DreamZ instance;
+    private static final Logger logger = Logger.getLogger("Minecraft");
     private SettingsManager settingsManager;
     private DreamManager dreamManager;
     private WorldManager worldManager;
     private DreamZCommandExecutor CommandExecutor;
     private Inventory inventory;
-    private static DreamZ instance;
-    private static final Logger logger = Logger.getLogger("Minecraft");
     public HashMap<Player, Location> returnLocation = new HashMap<Player, Location>();
     public HashMap<Player, Integer> schedulers = new HashMap<Player, Integer>();
     public HashMap<Player, Location> deathLocation = new HashMap<Player, Location>();
     public HashMap<Player, Boolean> afterTeleport = new HashMap<Player, Boolean>();
-    private WorldCreator wc;
 
     @Override
     public void onDisable() {
         schedulers.clear();
         returnLocation.clear();
         deathLocation.clear();
+        afterTeleport.clear();
         getServer().getScheduler().cancelTasks(this);
     }
 
@@ -57,7 +56,7 @@ public class DreamZ extends JavaPlugin {
         worldManager = new WorldManager();
         inventory = new Inventory();
         CommandExecutor = new DreamZCommandExecutor(this);
-        
+
         getCommand("dreamz").setExecutor(CommandExecutor);
 
         try {
@@ -131,8 +130,10 @@ public class DreamZ extends JavaPlugin {
         }
     }
 
-    public String color(String text) {
-        String colourised = text.replaceAll("&(?=[0-9a-fA-FkK])", "\u00a7");
-        return colourised;
+    /**
+     * @return the inventory
+     */
+    public Inventory getInventory() {
+        return inventory;
     }
 }

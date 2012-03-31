@@ -1,13 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.p000ison.dreamz.util;
 
 import java.util.Iterator;
 import java.util.TreeMap;
 import me.p000ison.dreamz.DreamZ;
 import me.p000ison.dreamz.api.DreamType;
+import me.p000ison.dreamz.manager.SettingsManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -15,11 +12,12 @@ import org.bukkit.block.Block;
 
 /**
  *
- * @author Max
+ * @author p000ison
  */
 public class Util {
 
     private DreamZ plugin;
+    private SettingsManager settings = new SettingsManager();
 
     public Util() {
         plugin = DreamZ.getInstance();
@@ -28,25 +26,26 @@ public class Util {
     /**
      * @return the random location to teleport
      */
-    public Location randomLoc(double minX, double maxX, double minZ, double maxZ, World world) {
+    public Location randomLoc(World world) {
         Location loc;
         do {
-            double X = (-100 + (Math.random() * (100 - -100)));
-            double Z = (-100 + (Math.random() * (100 - -100)));
+            double X = (settings.getDreamWorldMinX() + (Math.random() * (settings.getDreamWorldMaxX() - settings.getDreamWorldMinX())));
+            double Z = (settings.getDreamWorldMinZ() + (Math.random() * (settings.getDreamWorldMaxZ() - settings.getDreamWorldMinZ())));
             double Y = world.getHighestBlockYAt((int) X, (int) Z);
             loc = new Location(world, X, Y, Z);
         } while (checkDreamSpawnLocation(loc, loc.getWorld()) == false);
 
         return loc;
     }
+
     /**
      * checks if the spawn location isnt deadly
      */
     public boolean checkEmtyXZ(double X, double Z, World world) {
         int a = 0;
         for (int i = 0; i <= 258; i++) {
-            if (world.getBlockAt((int)X, i, (int)Z).getType()== Material.AIR) {
-                 a++;
+            if (world.getBlockAt((int) X, i, (int) Z).getType() == Material.AIR) {
+                a++;
             }
         }
         if (a < 255) {
@@ -55,6 +54,7 @@ public class Util {
             return false;
         }
     }
+
     /**
      * checks if the spawn location isnt deadly
      */
@@ -116,5 +116,10 @@ public class Util {
             type = DreamType.NIGHTMARE;
         }
         return type;
+    }
+
+    public String color(String text) {
+        String colourised = text.replaceAll("&(?=[0-9a-fA-FkK])", "\u00a7");
+        return colourised;
     }
 }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.p000ison.dreamz.util;
 
 import java.io.File;
@@ -16,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  *
- * @author Max
+ * @author p000ison
  */
 public class Inventory {
 
@@ -61,7 +57,7 @@ public class Inventory {
     }
 
     private File getArmorFile(DreamType dtype, Player player) {
-        
+
         if (!getDic(player).exists()) {
             getDic(player).mkdir();
         }
@@ -69,7 +65,10 @@ public class Inventory {
     }
 
     public void save(DreamType dtype, Player player) {
-        if (plugin.getSettingsManager().isSaveInventory()) {
+        if ((plugin.getSettingsManager().isDreamWorldSaveInventory()
+                && player.getWorld() == plugin.getWorldManager().getDreamWorld())
+                || plugin.getSettingsManager().isNightMareSaveInventory()
+                && player.getWorld() == plugin.getWorldManager().getNightMare()) {
             write(getInventoryFile(dtype, player), player.getInventory().getContents());
             write(getArmorFile(dtype, player), player.getInventory().getArmorContents());
         }
@@ -78,7 +77,10 @@ public class Inventory {
     public void load(DreamType dtype, Player player) {
         File save = getInventoryFile(dtype, player);
         if (save.exists()) {
-            if (plugin.getSettingsManager().isSaveInventory()) {
+            if ((plugin.getSettingsManager().isDreamWorldSaveInventory()
+                    && player.getWorld() == plugin.getWorldManager().getDreamWorld())
+                    || plugin.getSettingsManager().isNightMareSaveInventory()
+                    && player.getWorld() == plugin.getWorldManager().getNightMare()) {
                 player.getInventory().clear();
 
                 ItemStack[] inventory = player.getInventory().getContents();
@@ -97,5 +99,18 @@ public class Inventory {
                 + File.separator + "players"
                 + File.separator + player.getName());
         return dic;
+    }
+
+    public void clearInventory(Player player, DreamType dtype) {
+        switch (dtype) {
+            case DREAMWORLD:
+                if (plugin.getSettingsManager().isDreamWorldClearInventory())
+                    player.getInventory().clear();
+                break;
+            case NIGHTMARE:
+                if (plugin.getSettingsManager().isNightMareClearInventory())
+                    player.getInventory().clear();
+                break;
+        }
     }
 }

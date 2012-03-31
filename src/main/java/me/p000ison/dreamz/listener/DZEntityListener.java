@@ -5,7 +5,10 @@ import me.p000ison.dreamz.api.DreamLeaveType;
 import me.p000ison.dreamz.api.DreamType;
 import me.p000ison.dreamz.api.events.DreamZPlayerDreamLeaveEvent;
 import me.p000ison.dreamz.manager.DreamManager;
-import org.bukkit.entity.*;
+import me.p000ison.dreamz.util.Util;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -22,6 +25,7 @@ public class DZEntityListener implements Listener {
 
     private DreamZ plugin;
     private DreamManager dream = new DreamManager();
+    private Util util = new Util();
     private DreamZPlayerDreamLeaveEvent DPDLE;
 
     public DZEntityListener(DreamZ plugin) {
@@ -52,11 +56,11 @@ public class DZEntityListener implements Listener {
             }
             if (cause == DamageCause.FIRE_TICK && plugin.afterTeleport.get(player)) {
                 event.setDamage(0);
-            } 
+            }
             if (player.hasPermission("dreamz.escape.damage")) {
                 if (dream.isInDream(player) && plugin.getSettingsManager().isUsingDamageExit()) {
                     if (player.getHealth() <= plugin.getSettingsManager().getDefaultRescueHealth()) {
-                        player.sendMessage(plugin.color(plugin.getSettingsManager().getDamageEscapeMessage()));
+                        player.sendMessage(util.color(plugin.getSettingsManager().getDamageEscapeMessage()));
                         event.setDamage(0);
 
                         DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.DEATH);

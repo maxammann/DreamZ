@@ -1,7 +1,6 @@
 Global:
     Delay: 2                 # Delay until you get teleported
     Debugging: true          # Default: false
-    DefaultReturnWorld: Main
     DefaultRescueHealth: 10  # 10 health equals 5 hearts
     canEscapeThrowBed: true  # Can the player escape throw a bed?
     preventSpawnOn: [LAVA, FIRE, AIR, WATER, CACTUS, LEAVES, BEDROCK, STATIONARY_LAVA]
@@ -9,6 +8,7 @@ Global:
     UsingThisWorldCreator: true
     ClearInventory: true
     SaveInventory: true
+    DisableHunger: true
 DreamWorld:
     Enabled: true            # Is the dreamworld enabled?
     Generation:
@@ -17,6 +17,8 @@ DreamWorld:
         Generator: SkylandsPlus      # Generator of another plugin
         Seed: 123456789          # Seed for the world.
     Chance: 50               # Chance to enter dreamworld.
+    SaveInventory: true
+    ClearInventory: true
     UsingDuration: true      # Using duration to get back?
     Duration: 60             # How long you'll stay in dreamworld (in secounds)
     Thundering: false        # Thundering in the dreamworld?
@@ -44,6 +46,8 @@ NightMare:
         Generator: DEFAULT       # Generator of another plugin
         Seed: 123456789          # Seed for the world.
     Chance: 50               # Chance to enter nightmare.
+    SaveInventory: true
+    ClearInventory: true
     UsingDuration: true      # Using duration to get back?
     Duration: 60             # How long you'll stay in dreamworld (in secounds)
     Thundering: true         # Thundering in the nightmare?

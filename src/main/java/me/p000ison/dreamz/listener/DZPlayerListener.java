@@ -1,7 +1,6 @@
 package me.p000ison.dreamz.listener;
 
 import me.p000ison.dreamz.DreamZ;
-import me.p000ison.dreamz.api.DreamType;
 import me.p000ison.dreamz.manager.DreamManager;
 import me.p000ison.dreamz.manager.SettingsManager;
 import me.p000ison.dreamz.util.Util;
@@ -49,7 +48,6 @@ public class DZPlayerListener implements Listener {
         if (player.getWorld() == plugin.getWorldManager().getDreamWorld() || player.getWorld() == plugin.getWorldManager().getNightMare()) {
             plugin.deathLocation.put(player, player.getLocation());
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -63,7 +61,7 @@ public class DZPlayerListener implements Listener {
                     }
                 } else {
                     if (settings.isDreamWorldRandomSpawn()) {
-                        event.setRespawnLocation(util.randomLoc(settings.getDreamWorldMinX(), settings.getDreamWorldMaxX(), settings.getDreamWorldMinZ(), settings.getDreamWorldMaxZ(), plugin.getWorldManager().getDreamWorld()));
+                        event.setRespawnLocation(util.randomLoc(plugin.getWorldManager().getDreamWorld()));
                     } else {
                         event.setRespawnLocation(plugin.getWorldManager().getDreamWorld().getSpawnLocation());
                     }
@@ -75,7 +73,7 @@ public class DZPlayerListener implements Listener {
                     }
                 } else {
                     if (settings.isNightMareRandomSpawn()) {
-                        event.setRespawnLocation(util.randomLoc(settings.getNightMareMinX(), settings.getNightMareMaxX(), settings.getNightMareMinZ(), settings.getNightMareMaxZ(), plugin.getWorldManager().getNightMare()));
+                        event.setRespawnLocation(util.randomLoc(plugin.getWorldManager().getNightMare()));
                     } else {
                         event.setRespawnLocation(plugin.getWorldManager().getNightMare().getSpawnLocation());
                     }
@@ -123,17 +121,15 @@ public class DZPlayerListener implements Listener {
     }
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerHungerChange(FoodLevelChangeEvent  event) {
-        boolean i = true;
-        if (i = true && event.getEntity().getWorld() == plugin.getWorldManager().getDreamWorld()) {
+        if (settings.isDisableHunger() && dream.isInDreamWorld((Player)event.getEntity())) {
             event.setCancelled(true);
-        } else if (i = true && event.getEntity().getWorld() == plugin.getWorldManager().getNightMare()) {
+        } else if (settings.isDisableHunger() && event.getEntity().getWorld() == plugin.getWorldManager().getNightMare()) {
             event.setCancelled(true);
         }
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerSneak(PlayerToggleSneakEvent event) {
-
         Player player = event.getPlayer();
         Vector vec;
         if (player.hasPermission("dreamz.fly")) {
@@ -144,7 +140,7 @@ public class DZPlayerListener implements Listener {
                 } else {
                     vec = player.getLocation().getDirection().multiply(plugin.getSettingsManager().getNightMareFlyMultiplier() + 5);
                 }
-                vec.setY(vec.getY() + 0.70);
+                vec.setY(vec.getY() + 0.75);
                 player.setVelocity(vec);
                 player.setFallDistance(0);
             }

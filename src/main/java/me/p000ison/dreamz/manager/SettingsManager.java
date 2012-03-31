@@ -15,7 +15,6 @@ public final class SettingsManager {
     private DreamZ plugin;
     private File main;
     private FileConfiguration config;
-    private String DefaultReturnWorld;
     private String DreamWorldName;
     private String NightMareName;
     private String DreamWorldType;
@@ -72,8 +71,11 @@ public final class SettingsManager {
     private boolean NightMareRespawnAtDeathPoint;
     private boolean NightMareRespawn;
     private boolean DreamWorldRespawn;
-    private boolean SaveInventory;
-    private boolean ClearInventory;
+    private boolean DreamWorldSaveInventory;
+    private boolean DreamWorldClearInventory;
+    private boolean NightMareSaveInventory;
+    private boolean NightMareClearInventory;
+    private boolean DisableHunger;
 
     /**
      *
@@ -107,7 +109,6 @@ public final class SettingsManager {
         DreamWorldType = getConfig().getString("DreamWorld.Generation.Type");
         NightMareName = getConfig().getString("NightMare.Generation.Name");
         NightMareType = getConfig().getString("NightMare.Generation.Type");
-        DefaultReturnWorld = getConfig().getString("Global.DefaultReturnWorld");
         DefaultRescueHealth = getConfig().getInt("Global.DefaultRescueHealth");
         NightMareDuration = getConfig().getInt("NightMare.Duration");
         DreamWorldDuration = getConfig().getInt("DreamWorld.Duration");
@@ -160,8 +161,11 @@ public final class SettingsManager {
         NightMareRespawnAtDeathPoint = getConfig().getBoolean("NightMare.Spawning.RespawnAtDeathPoint");
         NightMareRespawn = getConfig().getBoolean("NightMare.Spawning.RespawnInDream");
         DreamWorldRespawn = getConfig().getBoolean("DreamWorld.Spawning.RespawnInDream");
-        ClearInventory = getConfig().getBoolean("Global.ClearInventory");
-        SaveInventory = getConfig().getBoolean("Global.SaveInventory");
+        DreamWorldSaveInventory = getConfig().getBoolean("DreamWorld.SaveInventory");
+        DreamWorldClearInventory = getConfig().getBoolean("DreamWorld.ClearInventory");
+        NightMareSaveInventory = getConfig().getBoolean("NightMare.SaveInventory");
+        NightMareClearInventory = getConfig().getBoolean("NightMare.ClearInventory");
+        DisableHunger = getConfig().getBoolean("Global.DisableHunger");
 
         save();
     }
@@ -581,16 +585,37 @@ public final class SettingsManager {
     }
 
     /**
-     * @return the SaveInventory
+     * @return the DisableHunger
      */
-    public boolean isSaveInventory() {
-        return SaveInventory;
+    public boolean isDisableHunger() {
+        return DisableHunger;
     }
 
     /**
-     * @return the ClearInventory
+     * @return the DreamWorldSaveInventory
      */
-    public boolean isClearInventory() {
-        return ClearInventory;
+    public boolean isDreamWorldSaveInventory() {
+        return DreamWorldSaveInventory;
+    }
+
+    /**
+     * @return the DreamWorldClearInventory
+     */
+    public boolean isDreamWorldClearInventory() {
+        return DreamWorldClearInventory;
+    }
+
+    /**
+     * @return the NightMareSaveInventory
+     */
+    public boolean isNightMareSaveInventory() {
+        return NightMareSaveInventory;
+    }
+
+    /**
+     * @return the NightMareClearInventory
+     */
+    public boolean isNightMareClearInventory() {
+        return NightMareClearInventory;
     }
 }
