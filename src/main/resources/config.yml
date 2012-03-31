@@ -6,8 +6,6 @@ Global:
     preventSpawnOn: [LAVA, FIRE, AIR, WATER, CACTUS, LEAVES, BEDROCK, STATIONARY_LAVA]
     UsingDamageExit: true    # Can you exit a dream, when you reach the DefaultRescueHealth limit?
     UsingThisWorldCreator: true
-    ClearInventory: true
-    SaveInventory: true
     DisableHunger: true
 DreamWorld:
     Enabled: true            # Is the dreamworld enabled?

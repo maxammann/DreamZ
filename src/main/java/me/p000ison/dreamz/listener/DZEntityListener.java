@@ -54,9 +54,13 @@ public class DZEntityListener implements Listener {
                     }
                 }
             }
-            if (cause == DamageCause.FIRE_TICK && plugin.afterTeleport.get(player)) {
-                event.setDamage(0);
+            
+            if (plugin.afterTeleport.containsKey(player)) {
+                if (cause == DamageCause.FIRE_TICK && plugin.afterTeleport.get(player)) {
+                    event.setDamage(0);
+                }
             }
+            
             if (player.hasPermission("dreamz.escape.damage")) {
                 if (dream.isInDream(player) && plugin.getSettingsManager().isUsingDamageExit()) {
                     if (player.getHealth() <= plugin.getSettingsManager().getDefaultRescueHealth()) {

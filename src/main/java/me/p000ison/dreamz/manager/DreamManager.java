@@ -198,13 +198,14 @@ public class DreamManager {
 
                 break;
         }
-        inv.clearInventory(player, dtype);
         inv.save(dtype, player);
+        inv.clearInventory(player, dtype);
     }
 
     public void leave(Player player, DreamType dtype, DreamLeaveType leavetype) {
 
         if (player.isOnline()) {
+            inv.load(dtype, player);
             if (plugin.returnLocation.containsKey(player)) {
                 player.teleport(plugin.returnLocation.get(player));
             } else {
@@ -226,7 +227,7 @@ public class DreamManager {
         if (settings.isDebugging() == true) {
             plugin.getLogger().log(Level.INFO, "player teleported left the dream");
         }
-        inv.load(dtype, player);
+
         plugin.afterTeleport.put(null, Boolean.TRUE);
         plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
 

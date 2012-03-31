@@ -16,32 +16,33 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Inventory {
 
-    DreamZ plugin = DreamZ.getInstance();
-
-    private void write(File save, ItemStack[] inventory) {
+    private DreamZ plugin = DreamZ.getInstance();
+    private FileConfiguration config;
+    
+    private void write(File file, ItemStack[] inventory) {
         try {
-            FileConfiguration out = YamlConfiguration.loadConfiguration(save);
+            config = YamlConfiguration.loadConfiguration(file);
 
-            for (int i = 0; i < inventory.length; i++) {
-                ItemStack item = inventory[i];
+            for (int slot = 0; slot < inventory.length; slot++) {
+                ItemStack item = inventory[slot];
                 if (item != null) {
-                    out.set(i + "", item);
+                    config.set(String.valueOf(slot), item);
                 } else {
-                    out.set(i + "", new ItemStack(Material.AIR));
+                    config.set(String.valueOf(slot), new ItemStack(Material.AIR));
                 }
             }
-            out.save(save);
+            config.save(file);
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to write the Inventory!");
         }
     }
 
-    private void read(File save, ItemStack[] inventory) {
+    private void read(File file, ItemStack[] inventory) {
         try {
-            FileConfiguration in = YamlConfiguration.loadConfiguration(save);
+            config = YamlConfiguration.loadConfiguration(file);
 
-            for (int i = 0; i < inventory.length; i++) {
-                inventory[i] = in.getItemStack(i + "");
+            for (int slot = 0; slot < inventory.length; slot++) {
+                inventory[slot] = config.getItemStack(String.valueOf(slot));
             }
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to load the Inventory!");
@@ -53,7 +54,7 @@ public class Inventory {
         if (!getDic(player).exists()) {
             getDic(player).mkdir();
         }
-        return new File(getDic(player) + File.separator + dtype.toString().toLowerCase() + ".inv");
+        return new File(getDic(player) + File.separator + dtype.toString().toLowerCase() + ".inv.yml");
     }
 
     private File getArmorFile(DreamType dtype, Player player) {
@@ -61,7 +62,7 @@ public class Inventory {
         if (!getDic(player).exists()) {
             getDic(player).mkdir();
         }
-        return new File(getDic(player) + File.separator + dtype.toString().toLowerCase() + ".armor");
+        return new File(getDic(player) + File.separator + dtype.toString().toLowerCase() + ".armor.yml");
     }
 
     public void save(DreamType dtype, Player player) {
@@ -88,14 +89,14 @@ public class Inventory {
                 player.getInventory().setContents(inventory);
 
                 ItemStack[] armor = new ItemStack[4];
-                read(getInventoryFile(dtype, player), armor);
+                read(getArmorFile(dtype, player), armor);
                 player.getInventory().setArmorContents(armor);
             }
         }
     }
 
     private File getDic(Player player) {
-        File dic = new File(plugin.getDataFolder().getAbsolutePath()
+        File dic = new File(plugin.getDataFolder()
                 + File.separator + "players"
                 + File.separator + player.getName());
         return dic;
