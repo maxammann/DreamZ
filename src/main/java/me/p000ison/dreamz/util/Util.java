@@ -16,7 +16,7 @@ import org.bukkit.block.Block;
  */
 public class Util {
 
-    private DreamZ plugin;
+    private static DreamZ plugin;
     private SettingsManager settings = new SettingsManager();
 
     public Util() {
@@ -26,12 +26,12 @@ public class Util {
     /**
      * @return the random location to teleport
      */
-    public Location randomLoc(World world) {
+    public Location randomLoc(World world, DreamType dtype) {
         Location loc;
         do {
             double X = (settings.getDreamWorldMinX() + (Math.random() * (settings.getDreamWorldMaxX() - settings.getDreamWorldMinX())));
             double Z = (settings.getDreamWorldMinZ() + (Math.random() * (settings.getDreamWorldMaxZ() - settings.getDreamWorldMinZ())));
-            double Y = world.getHighestBlockYAt((int) X, (int) Z);
+            double Y = getHeighestFreeBlockAt((int) X, (int) Z, world, dtype);
             loc = new Location(world, X, Y, Z);
         } while (checkDreamSpawnLocation(loc, loc.getWorld()) == false);
 
@@ -60,22 +60,34 @@ public class Util {
      */
     public boolean checkDreamSpawnLocation(Location loc, World world) {
         boolean safe = false;
-        Location block = new Location(world, loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ());
 
-        for (Iterator it = plugin.getSettingsManager().getPreventSpawnOn().iterator(); it.hasNext();) {
-            String preventSpawnOn = (String) it.next();
+            Location block1 = new Location(world, loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ());
+            Location block2 = new Location(world, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            Location block3 = new Location(world, loc.getBlockX(), loc.getBlockY() + 1, loc.getBlockZ());
 
-            if (block.getBlock().getType() == Material.valueOf(preventSpawnOn.toUpperCase()) || !checkEmtyXZ(loc.getX(), loc.getZ(), world)) {
-                safe = false;
-            } else {
-                safe = true;
+            for (Iterator it = plugin.getSettingsManager().getPreventSpawnOn().iterator(); it.hasNext();) {
+                String preventSpawnOn = (String) it.next();
+                Material mat = Material.valueOf(preventSpawnOn.toUpperCase());
+
+                if (block1.getBlock().getType() == mat || block2.getBlock().getType() == mat ||block3.getBlock().getType() == mat || !checkEmtyXZ(loc.getX(), loc.getZ(), world)) {
+                    safe = false;
+                } else {
+                    safe = true;
+                }
             }
-        }
         return safe;
     }
 
-    public static int getHeighestFreeBlockAt(final int posX, final int posZ, final World world) {
-        final int maxHeight = 265;
+    public static int getHeighestFreeBlockAt(final int posX, final int posZ, final World world, DreamType dtype) {
+        int maxHeight = 258;
+        switch (dtype) {
+            case DREAMWORLD:
+                maxHeight = plugin.getSettingsManager().getDreamWorldWorldHeight();
+                break;
+            case NIGHTMARE:
+                maxHeight = plugin.getSettingsManager().getNightMareWorldHeight();
+                break;
+        }
         int searchedHeight = maxHeight - 1;
         Block lastBlock = null;
         while (searchedHeight > 0) {

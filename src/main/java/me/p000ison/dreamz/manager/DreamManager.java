@@ -170,7 +170,7 @@ public class DreamManager {
         switch (dtype) {
             case DREAMWORLD:
                 if (settings.isDreamWorldRandomSpawn()) {
-                    player.teleport(util.randomLoc(plugin.getWorldManager().getDreamWorld()));
+                    player.teleport(util.randomLoc(plugin.getWorldManager().getDreamWorld(), DreamType.DREAMWORLD));
                     player.setNoDamageTicks(40);
                 } else {
                     player.teleport(plugin.getWorldManager().getDreamWorld().getSpawnLocation());
@@ -184,7 +184,7 @@ public class DreamManager {
                 break;
             case NIGHTMARE:
                 if (settings.isNightMareRandomSpawn()) {
-                    player.teleport(util.randomLoc(plugin.getWorldManager().getNightMare()));
+                    player.teleport(util.randomLoc(plugin.getWorldManager().getNightMare(), DreamType.NIGHTMARE));
                     player.setNoDamageTicks(40);
                 } else {
                     player.teleport(plugin.getWorldManager().getNightMare().getSpawnLocation());
@@ -202,7 +202,7 @@ public class DreamManager {
         inv.clearInventory(player, dtype);
     }
 
-    public void leave(Player player, DreamType dtype, DreamLeaveType leavetype) {
+    public void leave(final Player player, DreamType dtype, DreamLeaveType leavetype) {
 
         if (player.isOnline()) {
             inv.load(dtype, player);
@@ -228,12 +228,12 @@ public class DreamManager {
             plugin.getLogger().log(Level.INFO, "player teleported left the dream");
         }
 
-        plugin.afterTeleport.put(null, Boolean.TRUE);
+        plugin.afterTeleport.put(player, true);
         plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
 
             @Override
             public void run() {
-                plugin.afterTeleport.put(null, Boolean.FALSE);
+                plugin.afterTeleport.put(player, false);
             }
         }, (200));
     }

@@ -1,6 +1,7 @@
 package me.p000ison.dreamz.listener;
 
 import me.p000ison.dreamz.DreamZ;
+import me.p000ison.dreamz.api.DreamType;
 import me.p000ison.dreamz.manager.DreamManager;
 import me.p000ison.dreamz.manager.SettingsManager;
 import me.p000ison.dreamz.util.Util;
@@ -61,7 +62,7 @@ public class DZPlayerListener implements Listener {
                     }
                 } else {
                     if (settings.isDreamWorldRandomSpawn()) {
-                        event.setRespawnLocation(util.randomLoc(plugin.getWorldManager().getDreamWorld()));
+                        event.setRespawnLocation(util.randomLoc(plugin.getWorldManager().getDreamWorld(), DreamType.DREAMWORLD));
                     } else {
                         event.setRespawnLocation(plugin.getWorldManager().getDreamWorld().getSpawnLocation());
                     }
@@ -73,7 +74,7 @@ public class DZPlayerListener implements Listener {
                     }
                 } else {
                     if (settings.isNightMareRandomSpawn()) {
-                        event.setRespawnLocation(util.randomLoc(plugin.getWorldManager().getNightMare()));
+                        event.setRespawnLocation(util.randomLoc(plugin.getWorldManager().getNightMare(), DreamType.NIGHTMARE));
                     } else {
                         event.setRespawnLocation(plugin.getWorldManager().getNightMare().getSpawnLocation());
                     }

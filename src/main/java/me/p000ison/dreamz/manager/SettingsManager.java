@@ -76,6 +76,8 @@ public final class SettingsManager {
     private boolean NightMareSaveInventory;
     private boolean NightMareClearInventory;
     private boolean DisableHunger;
+    private int DreamWorldWorldHeight;
+    private int NightMareWorldHeight;
 
     /**
      *
@@ -166,7 +168,10 @@ public final class SettingsManager {
         NightMareSaveInventory = getConfig().getBoolean("NightMare.SaveInventory");
         NightMareClearInventory = getConfig().getBoolean("NightMare.ClearInventory");
         DisableHunger = getConfig().getBoolean("Global.DisableHunger");
-
+        DreamWorldWorldHeight = getConfig().getInt("DreamWorld.Spawning.SpawnArea.WorldHeight");
+                NightMareWorldHeight = getConfig().getInt("NightMare.Spawning.SpawnArea.WorldHeight");
+        
+        
         save();
     }
 
@@ -617,5 +622,19 @@ public final class SettingsManager {
      */
     public boolean isNightMareClearInventory() {
         return NightMareClearInventory;
+    }
+
+    /**
+     * @return the DreamWorldWorldHeight
+     */
+    public int getDreamWorldWorldHeight() {
+        return DreamWorldWorldHeight;
+    }
+
+    /**
+     * @return the NightMareWorldHeight
+     */
+    public int getNightMareWorldHeight() {
+        return NightMareWorldHeight;
     }
 }
