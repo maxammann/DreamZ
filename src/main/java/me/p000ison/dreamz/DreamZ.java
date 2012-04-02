@@ -14,7 +14,6 @@ import me.p000ison.dreamz.manager.WorldManager;
 import me.p000ison.dreamz.manager.commands.*;
 import me.p000ison.dreamz.util.Inventory;
 import net.milkbowl.vault.permission.Permission;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -27,12 +26,12 @@ public class DreamZ extends JavaPlugin {
 
     private static DreamZ instance;
     private static final Logger logger = Logger.getLogger("Minecraft");
-    public static Permission perms = null;
+    private static Permission perms = null;
     private static SettingsManager settingsManager;
     private static DreamManager dreamManager;
     private static WorldManager worldManager;
     private static CommandManager commandManager = new CommandManager();
-    private Inventory inventory;
+    private static Inventory inventory;
     public HashMap<Player, Location> returnLocation = new HashMap<Player, Location>();
     public HashMap<Player, Integer> schedulers = new HashMap<Player, Integer>();
     public HashMap<Player, Location> deathLocation = new HashMap<Player, Location>();
@@ -50,6 +49,17 @@ public class DreamZ extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        setupManagers();
+        setupMetrics();
+        registerCommands();
+        registerEvents();
+        if (getServer().getPluginManager().getPlugin("Vault") != null) {
+            setupPermissions();
+        }
+
+    }
+
+    public void setupManagers() {
         settingsManager = new SettingsManager();
         worldManager = new WorldManager();
 
@@ -61,20 +71,15 @@ public class DreamZ extends JavaPlugin {
         dreamManager = new DreamManager();
         worldManager = new WorldManager();
         inventory = new Inventory();
+    }
 
+    public void setupMetrics() {
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
         } catch (IOException e) {
             logger.log(Level.WARNING, String.format("Could not send Plugin-Stats: %s", e.getMessage()));
         }
-
-        registerCommands();
-        if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            setupPermissions();
-        }
-        registerEvents();
-
     }
 
     private void registerEvents() {
@@ -132,33 +137,6 @@ public class DreamZ extends JavaPlugin {
         return worldManager;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        return commandManager.dispatch(sender, cmd, commandLabel, args);
-    }
-//    public void sendCommandMessage(String msg, CommandSender sender, ChatColor color) {
-//        if (sender instanceof Player) {
-//            Player player = (Player) sender;
-//            player.sendMessage(color + msg);
-//        } else {
-//            logger.log(Level.INFO, msg);
-//        }
-//    }
-//
-//    public boolean hasPermission(String permission, CommandSender sender) {
-//        if (sender instanceof Player) {
-//            Player player = (Player) sender;
-//            if (player.hasPermission(permission)) {
-//                player.hasPermission(permission);
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        } else {
-//            return true;
-//        }
-//    }
-
     /**
      * @return the inventory
      */
@@ -166,10 +144,15 @@ public class DreamZ extends JavaPlugin {
         return inventory;
     }
 
-    public static boolean hasPermission(Player player, String name) {
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+        return commandManager.dispatch(sender, cmd, commandLabel, args);
+    }
+
+    public static boolean hasPermission(Player player, String permission) {
         if (perms != null) {
-            return perms.has(player, name);
+            return perms.has(player, permission);
         }
-        return player.hasPermission(name);
+        return player.hasPermission(permission);
     }
 }

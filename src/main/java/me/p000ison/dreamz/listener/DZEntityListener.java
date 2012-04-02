@@ -54,13 +54,13 @@ public class DZEntityListener implements Listener {
                     }
                 }
             }
-            
+
             if (plugin.afterTeleport.containsKey(player)) {
                 if (cause == DamageCause.FIRE_TICK && plugin.afterTeleport.get(player)) {
                     event.setDamage(0);
                 }
             }
-            
+
             if (player.hasPermission("dreamz.escape.damage")) {
                 if (dream.isInDream(player) && plugin.getSettingsManager().isUsingDamageExit()) {
                     if (player.getHealth() <= plugin.getSettingsManager().getDefaultRescueHealth()) {
@@ -90,10 +90,10 @@ public class DZEntityListener implements Listener {
             return;
         }
 
-        if (target.getWorld() == plugin.getWorldManager().getDreamWorld()
-                && plugin.getSettingsManager().isDreamWorldPassiveMobs()
-                || target.getWorld() == plugin.getWorldManager().getNightMare()
-                && plugin.getSettingsManager().isNighMarePassiveMobs()) {
+        if ((target.getWorld() == plugin.getWorldManager().getDreamWorld()
+                && plugin.getSettingsManager().isDreamWorldPassiveMobs())
+                || (target.getWorld() == plugin.getWorldManager().getNightMare()
+                && plugin.getSettingsManager().isNighMarePassiveMobs())) {
             if (target instanceof Player) {
                 if (entity instanceof Creature) {
                     event.setCancelled(true);
@@ -112,10 +112,10 @@ public class DZEntityListener implements Listener {
         }
 
         if (target != null) {
-            if (target.getWorld() == plugin.getWorldManager().getDreamWorld()
-                    && plugin.getSettingsManager().isDreamWorldPassiveMobs()
-                    || target.getWorld() == plugin.getWorldManager().getNightMare()
-                    && plugin.getSettingsManager().isNighMarePassiveMobs()) {
+            if ((target.getWorld() == plugin.getWorldManager().getDreamWorld()
+                    && plugin.getSettingsManager().isDreamWorldPassiveMobs())
+                    || (target.getWorld() == plugin.getWorldManager().getNightMare()
+                    && plugin.getSettingsManager().isNighMarePassiveMobs())) {
                 if (target instanceof Player) {
                     if (entity instanceof Creature) {
                         event.setCancelled(true);

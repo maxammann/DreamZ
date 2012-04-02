@@ -36,11 +36,8 @@ public class DreamManager {
      * @param player the player to teleport
      */
     public void enterDreamInNormal(final Player player) {
-        final DreamType randomDream = util.randomDream();
+        final DreamType randomDream = util.randomDream(plugin.getSettingsManager().getDreamWorldChance(), plugin.getSettingsManager().getNightMareChance());
 
-//        if (!settings.isDreamWorldEnabled()) {
-//            return;
-//        }
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
             @Override
@@ -145,7 +142,7 @@ public class DreamManager {
             player.setNoDamageTicks(40);
         }
         player.sendMessage(util.isDreamDreamWorld(dtype) ? util.color(settings.getEnterDreamWorldMessage()) : util.color(settings.getEnterNightMareMessage()));
-        plugin.getWorldManager().setWeather(util.isDreamDreamWorld(dtype) ? settings.isDreamWorldThundering() : settings.isNightMareThundering(),util.isDreamDreamWorld(dtype) ? settings.isDreamWorldStorm() : settings.isNightMareStorm(), util.isDreamDreamWorld(dtype) ? plugin.getWorldManager().getDreamWorld() : plugin.getWorldManager().getNightMare());
+        plugin.getWorldManager().setWeather(util.isDreamDreamWorld(dtype) ? settings.isDreamWorldThundering() : settings.isNightMareThundering(), util.isDreamDreamWorld(dtype) ? settings.isDreamWorldStorm() : settings.isNightMareStorm(), util.isDreamDreamWorld(dtype) ? plugin.getWorldManager().getDreamWorld() : plugin.getWorldManager().getNightMare());
         if (util.isDreamDreamWorld(dtype) ? settings.isDreamWorldUsingDuration() : settings.isNightMareUsingDuration()) {
             startRetrunTimer(player, dtype);
         }
@@ -170,7 +167,7 @@ public class DreamManager {
             player.setNoDamageTicks(40);
             player.setFallDistance(0);
             player.sendMessage(util.color(settings.getLeaveMessage()));
-            
+
             plugin.afterTeleport.put(player, true);
             plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
 

@@ -40,7 +40,7 @@ public class DZWeatherListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        
+
         if (!event.toThunderState()) {
             if (plugin.getSettingsManager().isNightMareThundering() && event.getWorld() == plugin.getWorldManager().getNightMare()
                     || plugin.getSettingsManager().isDreamWorldThundering() && event.getWorld() == plugin.getWorldManager().getDreamWorld()) {

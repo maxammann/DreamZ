@@ -120,22 +120,21 @@ public class DZPlayerListener implements Listener {
             }
         }
     }
+
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerHungerChange(FoodLevelChangeEvent  event) {
-        if (settings.isDisableHunger() && dream.isInDreamWorld((Player)event.getEntity())) {
-            event.setCancelled(true);
-        } else if (settings.isDisableHunger() && event.getEntity().getWorld() == plugin.getWorldManager().getNightMare()) {
+    public void onPlayerHungerChange(FoodLevelChangeEvent event) {
+        if (settings.isDisableHunger() && dream.isInDream((Player) event.getEntity())) {
             event.setCancelled(true);
         }
     }
-    
+
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerSneak(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
         Vector vec;
         if (player.hasPermission("dreamz.fly")) {
-            if (player.getWorld() == plugin.getWorldManager().getDreamWorld() && plugin.getSettingsManager().getDreamWorldFlyMultiplier() != 0
-                    || player.getWorld() == plugin.getWorldManager().getNightMare() && plugin.getSettingsManager().getNightMareFlyMultiplier() != 0) {
+            if ((player.getWorld() == plugin.getWorldManager().getDreamWorld() && plugin.getSettingsManager().getDreamWorldFlyMultiplier() != 0)
+                    || (player.getWorld() == plugin.getWorldManager().getNightMare() && plugin.getSettingsManager().getNightMareFlyMultiplier() != 0)) {
                 if (player.getWorld() == plugin.getWorldManager().getDreamWorld()) {
                     vec = player.getLocation().getDirection().multiply(plugin.getSettingsManager().getDreamWorldFlyMultiplier() + 5);
                 } else {

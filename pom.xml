@@ -89,6 +89,12 @@
             <artifactId>Vault</artifactId>
             <version>1.2.13-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <!-- Repositories -->
     <repositories>
@@ -99,6 +105,12 @@
         <repository>
             <id>milkbowl-repo</id>
             <url>http://ci.milkbowl.net/plugin/repository/everything/</url>
+        </repository>
+        <repository>
+            <url>http://repo1.maven.org/maven2/</url>
+            <id>junit</id>
+            <layout>default</layout>
+            <name>Repository for library Library[junit]</name>
         </repository>
     </repositories>
 

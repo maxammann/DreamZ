@@ -28,7 +28,7 @@ public class WorldManager {
         DreamWorldName = plugin.getSettingsManager().getDreamWorldName();
         NightMareName = plugin.getSettingsManager().getNightMareName();
     }
-    
+
     /**
      * creates the DreamWorld
      */
@@ -40,7 +40,7 @@ public class WorldManager {
                 if (plugin.getSettingsManager().getDreamWorldGenerator() != null && !"DEFAULT".equalsIgnoreCase(plugin.getSettingsManager().getDreamWorldGenerator())) {
                     wc.generator(plugin.getSettingsManager().getDreamWorldGenerator());
                 }
-                wc.environment(World.Environment.valueOf(dreamworld ? plugin.getSettingsManager().getDreamWorldType().toUpperCase(): plugin.getSettingsManager().getNightMareType().toUpperCase()));
+                wc.environment(World.Environment.valueOf(dreamworld ? plugin.getSettingsManager().getDreamWorldType().toUpperCase() : plugin.getSettingsManager().getNightMareType().toUpperCase()));
                 wc.seed(dreamworld ? plugin.getSettingsManager().getDreamWorldSeed() : plugin.getSettingsManager().getNightMareSeed());
                 wc.generateStructures(dreamworld ? plugin.getSettingsManager().isDreamWorldGenerateStructures() : plugin.getSettingsManager().isNightMareGenerateStructures());
                 plugin.getServer().createWorld(wc);
@@ -49,7 +49,7 @@ public class WorldManager {
             }
         }
     }
-    
+
     /**
      * @param thunder weather of not thundering
      * @param storm weather of not raining

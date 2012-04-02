@@ -105,26 +105,26 @@ public class Util {
     /**
      * chooses a random dream
      */
-    public DreamType randomDream() {
+    public DreamType randomDream(double dwchance, double nmchance) {
 
         TreeMap<Double, DreamType> map = new TreeMap<Double, DreamType>();
 
-        map.put(plugin.getSettingsManager().getDreamWorldChance() / 100, DreamType.DREAMWORLD);
-        map.put((plugin.getSettingsManager().getDreamWorldChance() / 100) + plugin.getSettingsManager().getNightMareChance() / 100, DreamType.NIGHTMARE);
-        map.put(1 - (plugin.getSettingsManager().getDreamWorldChance() / 100) + plugin.getSettingsManager().getNightMareChance() / 100, DreamType.NOTHING);
+        map.put(dwchance / 100, DreamType.DREAMWORLD);
+        map.put((dwchance / 100) + nmchance / 100, DreamType.NIGHTMARE);
+        map.put(1 - (dwchance / 100) + nmchance / 100, DreamType.NOTHING);
 
         DreamType type = map.ceilingEntry(Math.random()).getValue();
-        if (plugin.getSettingsManager().getDreamWorldChance() / 100 == 0.50 || plugin.getSettingsManager().getNightMareChance() / 100 == 0.50) {
-            if (Math.random() > plugin.getSettingsManager().getDreamWorldChance() / 100) {
+        if (dwchance / 100 == 0.50 || nmchance / 100 == 0.50) {
+            if (Math.random() > dwchance / 100) {
                 type = DreamType.DREAMWORLD;
             } else {
                 type = DreamType.NIGHTMARE;
             }
         }
-        if (plugin.getSettingsManager().getDreamWorldChance() / 100 == 1.0) {
+        if (dwchance / 100 == 1.0) {
             type = DreamType.DREAMWORLD;
         }
-        if (plugin.getSettingsManager().getNightMareChance() / 100 == 1.0) {
+        if (nmchance / 100 == 1.0) {
             type = DreamType.NIGHTMARE;
         }
         return type;
