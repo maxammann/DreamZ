@@ -2,7 +2,7 @@ package me.p000ison.dreamz.api;
 
 /**
  *
- * @author Max
+ * @author p000ison
  */
 public enum DreamLeaveType {
 	NORMAL,

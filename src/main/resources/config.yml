@@ -8,8 +8,9 @@ Global:
     UsingThisWorldCreator: true
     DisableHunger: true
 DreamWorld:
-    Enabled: true            # Is the dreamworld enabled?
     Generation:
+        Enabled: true            # Will the dreamworld be generated?
+        GenerateStructures: false
         Name: dreamworld         # Name of the dreamworld
         Type: NORMAL             # NORMAL, NETHER or THE_END
         Generator: SkylandsPlus      # Generator of another plugin
@@ -38,8 +39,9 @@ DreamWorld:
         Y: 70
         Z: 0
 NightMare:
-    Enabled: true            # Is the dreamworld enabled?
     Generation:
+        Enabled: true            # Will the dreamworld be generated?
+        GenerateStructures: false
         Name: nightmare          # Name of the dreamworld
         Type: NETHER             # NORMAL, NETHER or THE_END
         Generator: DEFAULT       # Generator of another plugin

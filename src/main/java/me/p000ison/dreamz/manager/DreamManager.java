@@ -36,50 +36,29 @@ public class DreamManager {
      * @param player the player to teleport
      */
     public void enterDreamInNormal(final Player player) {
-        DreamType randomDream = util.randomDream();
-        switch (randomDream) {
-            case DREAMWORLD:
-                if (!settings.isDreamWorldEnabled()) {
-                    return;
+        final DreamType randomDream = util.randomDream();
+
+//        if (!settings.isDreamWorldEnabled()) {
+//            return;
+//        }
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+            @Override
+            public void run() {
+                DPDEE = new DreamZPlayerDreamEnterEvent(player, randomDream);
+                plugin.getServer().getPluginManager().callEvent(DPDEE);
+                enter(player, randomDream);
+                if (settings.isDebugging() == true) {
+                    plugin.getLogger().log(Level.INFO, String.format("player teleported enterded %s", randomDream.toString()));
                 }
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            }
+        }, (settings.getDelay() * 20));
 
-                    @Override
-                    public void run() {
-                        DPDEE = new DreamZPlayerDreamEnterEvent(player, DreamType.DREAMWORLD);
-                        plugin.getServer().getPluginManager().callEvent(DPDEE);
-                        enter(player, DreamType.DREAMWORLD);
-                        if (settings.isDebugging() == true) {
-                            plugin.getLogger().log(Level.INFO, "player teleported enterded DreamWorld");
-                        }
-                    }
-                }, (settings.getDelay() * 20));
-                break;
-            case NIGHTMARE:
-                if (!settings.isNightMareEnabled()) {
-                    return;
-                }
-
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
-                    @Override
-                    public void run() {
-                        DPDEE = new DreamZPlayerDreamEnterEvent(player, DreamType.NIGHTMARE);
-                        plugin.getServer().getPluginManager().callEvent(DPDEE);
-                        enter(player, DreamType.NIGHTMARE);
-                        if (settings.isDebugging() == true) {
-                            plugin.getLogger().log(Level.INFO, "player entered NightMare");
-                        }
-                    }
-                }, (settings.getDelay() * 20));
-                break;
-            case NOTHING:
-                DPDEE = new DreamZPlayerDreamEnterEvent(player, null);
-                DPDEE.setCancelled(true);
-//                DPDEE = new DreamZPlayerDreamEnterEvent(player, DreamType.DREAM);
-//                DPDEE.setCancelled(true);
-                break;
+        if (randomDream.equals(DreamType.NOTHING)) {
+            DPDEE = new DreamZPlayerDreamEnterEvent(player, randomDream);
+            DPDEE.setCancelled(true);
         }
+
     }
 
     /**
@@ -91,10 +70,18 @@ public class DreamManager {
     public void enterDreamInDream(Player player, PlayerBedEnterEvent event) {
         if (settings.isCanEscapeThrowBed()) {
             Location loc = event.getBed().getLocation();
-            if (loc.getX() == settings.getDreamWorldBedX() && loc.getY() == settings.getDreamWorldBedY() && loc.getZ() == settings.getDreamWorldBedZ()
-                    || loc.getX() == settings.getNightMareBedX() && loc.getY() == settings.getNightMareBedY() && loc.getZ() == settings.getNightMareBedZ()) {
+            if ((player.getWorld() == plugin.getWorldManager().getDreamWorld()
+                    && loc.getX() == settings.getDreamWorldBedX()
+                    && loc.getY() == settings.getDreamWorldBedY()
+                    && loc.getZ() == settings.getDreamWorldBedZ())
+                    || (player.getWorld() == plugin.getWorldManager().getDreamWorld()
+                    && loc.getX() == settings.getNightMareBedX()
+                    && loc.getY() == settings.getNightMareBedY()
+                    && loc.getZ() == settings.getNightMareBedZ())) {
+
                 DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.BED);
                 plugin.getServer().getPluginManager().callEvent(DPDLE);
+                leave(player, DreamType.NOTHING, DreamLeaveType.BED);
             }
         } else {
             event.setCancelled(true);
@@ -111,36 +98,19 @@ public class DreamManager {
      * @param player the player to teleport
      * @param event event to cancel
      */
-    public void startRetrunTimer(final Player player, DreamType dtype) {
-        if (dtype == DreamType.DREAMWORLD) {
-            plugin.schedulers.put(player, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+    public void startRetrunTimer(final Player player, final DreamType dtype) {
+        plugin.schedulers.put(player, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
-                @Override
-                public void run() {
-                    DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.NORMAL);
-                    plugin.getServer().getPluginManager().callEvent(DPDLE);
-                    leave(player, DreamType.DREAMWORLD, DreamLeaveType.NORMAL);
-                    if (settings.isDebugging() == true) {
-                        plugin.getLogger().log(Level.INFO, "player teleported back");
-                    }
+            @Override
+            public void run() {
+                DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.NORMAL);
+                plugin.getServer().getPluginManager().callEvent(DPDLE);
+                leave(player, dtype, DreamLeaveType.NORMAL);
+                if (settings.isDebugging() == true) {
+                    plugin.getLogger().log(Level.INFO, "player teleported back");
                 }
-            }, (settings.getDreamWorldDuration() * 20)));
-        }
-
-        if (dtype == DreamType.NIGHTMARE) {
-            plugin.schedulers.put(player, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
-                @Override
-                public void run() {
-                    DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.NORMAL);
-                    plugin.getServer().getPluginManager().callEvent(DPDLE);
-                    leave(player, DreamType.NIGHTMARE, DreamLeaveType.NORMAL);
-                    if (settings.isDebugging() == true) {
-                        plugin.getLogger().log(Level.INFO, "player teleported back");
-                    }
-                }
-            }, (settings.getNightMareDuration() * 20)));
-        }
+            }
+        }, (DreamType.isNightMare() ? settings.getNightMareDuration() * 20 : settings.getDreamWorldDuration() * 20)));
     }
 
     /**
@@ -166,38 +136,21 @@ public class DreamManager {
     }
 
     public void enter(Player player, DreamType dtype) {
-        System.out.println(settings.isDreamWorldRandomSpawn());
-        switch (dtype) {
-            case DREAMWORLD:
-                if (settings.isDreamWorldRandomSpawn()) {
-                    player.teleport(util.randomLoc(plugin.getWorldManager().getDreamWorld(), DreamType.DREAMWORLD));
-                    player.setNoDamageTicks(40);
-                } else {
-                    player.teleport(plugin.getWorldManager().getDreamWorld().getSpawnLocation());
-                    player.setNoDamageTicks(40);
-                }
-                player.sendMessage(util.color(settings.getEnterDreamWorldMessage()));
-                plugin.getWorldManager().setWeather(settings.isDreamWorldThundering(), settings.isDreamWorldStorm(), plugin.getWorldManager().getNightMare());
-                if (settings.isDreamWorldUsingDuration()) {
-                    startRetrunTimer(player, dtype);
-                }
-                break;
-            case NIGHTMARE:
-                if (settings.isNightMareRandomSpawn()) {
-                    player.teleport(util.randomLoc(plugin.getWorldManager().getNightMare(), DreamType.NIGHTMARE));
-                    player.setNoDamageTicks(40);
-                } else {
-                    player.teleport(plugin.getWorldManager().getNightMare().getSpawnLocation());
-                    player.setNoDamageTicks(40);
-                }
-                player.sendMessage(util.color(settings.getEnterNightMareMessage()));
-                plugin.getWorldManager().setWeather(settings.isNightMareThundering(), settings.isNightMareStorm(), plugin.getWorldManager().getNightMare());
-                if (settings.isNightMareUsingDuration()) {
-                    startRetrunTimer(player, dtype);
-                }
 
-                break;
+        if (util.isDreamDreamWorld(dtype) ? settings.isDreamWorldRandomSpawn() : settings.isNightMareRandomSpawn()) {
+            player.teleport(util.randomLoc(util.isDreamDreamWorld(dtype) ? plugin.getWorldManager().getDreamWorld() : plugin.getWorldManager().getNightMare(), util.isDreamDreamWorld(dtype) ? DreamType.DREAMWORLD : DreamType.NIGHTMARE));
+            player.setNoDamageTicks(40);
+        } else {
+            player.teleport(util.isDreamDreamWorld(dtype) ? plugin.getWorldManager().getDreamWorld().getSpawnLocation() : plugin.getWorldManager().getNightMare().getSpawnLocation());
+            player.setNoDamageTicks(40);
         }
+        player.sendMessage(util.isDreamDreamWorld(dtype) ? util.color(settings.getEnterDreamWorldMessage()) : util.color(settings.getEnterNightMareMessage()));
+        plugin.getWorldManager().setWeather(util.isDreamDreamWorld(dtype) ? settings.isDreamWorldThundering() : settings.isNightMareThundering(),util.isDreamDreamWorld(dtype) ? settings.isDreamWorldStorm() : settings.isNightMareStorm(), util.isDreamDreamWorld(dtype) ? plugin.getWorldManager().getDreamWorld() : plugin.getWorldManager().getNightMare());
+        if (util.isDreamDreamWorld(dtype) ? settings.isDreamWorldUsingDuration() : settings.isNightMareUsingDuration()) {
+            startRetrunTimer(player, dtype);
+        }
+
+        player.setHealth(player.getMaxHealth());
         inv.save(dtype, player);
         inv.clearInventory(player, dtype);
     }
@@ -214,9 +167,18 @@ public class DreamManager {
                 player.teleport(defaultspawn);
             }
             player.setHealth(player.getMaxHealth());
-            player.setNoDamageTicks(100);
+            player.setNoDamageTicks(40);
             player.setFallDistance(0);
             player.sendMessage(util.color(settings.getLeaveMessage()));
+            
+            plugin.afterTeleport.put(player, true);
+            plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+
+                @Override
+                public void run() {
+                    plugin.afterTeleport.put(player, false);
+                }
+            }, (200));
         }
 
         if (plugin.schedulers.containsKey(player)) {
@@ -225,16 +187,7 @@ public class DreamManager {
         }
 
         if (settings.isDebugging() == true) {
-            plugin.getLogger().log(Level.INFO, "player teleported left the dream");
+            plugin.getLogger().log(Level.INFO, String.format("player teleported left %s", dtype));
         }
-
-        plugin.afterTeleport.put(player, true);
-        plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
-
-            @Override
-            public void run() {
-                plugin.afterTeleport.put(player, false);
-            }
-        }, (200));
     }
 }

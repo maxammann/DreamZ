@@ -78,6 +78,8 @@ public final class SettingsManager {
     private boolean DisableHunger;
     private int DreamWorldWorldHeight;
     private int NightMareWorldHeight;
+    private boolean DreamWorldGenerateStructures;
+    private boolean NightMareGenerateStructures;
 
     /**
      *
@@ -117,8 +119,8 @@ public final class SettingsManager {
         canEscapeThrowBed = getConfig().getBoolean("Global.canEscapeThrowBed");
         Delay = getConfig().getInt("Global.Delay");
         Debugging = getConfig().getBoolean("Global.Debugging");
-        NightMareEnabled = getConfig().getBoolean("NightMare.Enabled");
-        DreamWorldEnabled = getConfig().getBoolean("DreamWorld.Enabled");
+        NightMareEnabled = getConfig().getBoolean("NightMare.Generation.Enabled");
+        DreamWorldEnabled = getConfig().getBoolean("DreamWorld.Generation.Enabled");
         DreamWorldBedX = getConfig().getDouble("DreamWorld.Bed.X");
         DreamWorldBedY = getConfig().getDouble("DreamWorld.Bed.Y");
         DreamWorldBedZ = getConfig().getDouble("DreamWorld.Bed.Z");
@@ -169,9 +171,10 @@ public final class SettingsManager {
         NightMareClearInventory = getConfig().getBoolean("NightMare.ClearInventory");
         DisableHunger = getConfig().getBoolean("Global.DisableHunger");
         DreamWorldWorldHeight = getConfig().getInt("DreamWorld.Spawning.SpawnArea.WorldHeight");
-                NightMareWorldHeight = getConfig().getInt("NightMare.Spawning.SpawnArea.WorldHeight");
-        
-        
+        NightMareWorldHeight = getConfig().getInt("NightMare.Spawning.SpawnArea.WorldHeight");
+        DreamWorldGenerateStructures = getConfig().getBoolean("NightMare.Generation.GenerateStructures");
+        NightMareGenerateStructures = getConfig().getBoolean("NightMare.Generation.GenerateStructures");
+
         save();
     }
 
@@ -636,5 +639,19 @@ public final class SettingsManager {
      */
     public int getNightMareWorldHeight() {
         return NightMareWorldHeight;
+    }
+
+    /**
+     * @return the DreamWorldGenerateStructures
+     */
+    public boolean isDreamWorldGenerateStructures() {
+        return DreamWorldGenerateStructures;
+    }
+
+    /**
+     * @return the NightMareGenerateStructures
+     */
+    public boolean isNightMareGenerateStructures() {
+        return NightMareGenerateStructures;
     }
 }

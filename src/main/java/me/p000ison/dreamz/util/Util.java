@@ -61,20 +61,20 @@ public class Util {
     public boolean checkDreamSpawnLocation(Location loc, World world) {
         boolean safe = false;
 
-            Location block1 = new Location(world, loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ());
-            Location block2 = new Location(world, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-            Location block3 = new Location(world, loc.getBlockX(), loc.getBlockY() + 1, loc.getBlockZ());
+        Location block1 = new Location(world, loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ());
+        Location block2 = new Location(world, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        Location block3 = new Location(world, loc.getBlockX(), loc.getBlockY() + 1, loc.getBlockZ());
 
-            for (Iterator it = plugin.getSettingsManager().getPreventSpawnOn().iterator(); it.hasNext();) {
-                String preventSpawnOn = (String) it.next();
-                Material mat = Material.valueOf(preventSpawnOn.toUpperCase());
+        for (Iterator it = plugin.getSettingsManager().getPreventSpawnOn().iterator(); it.hasNext();) {
+            String preventSpawnOn = (String) it.next();
+            Material mat = Material.valueOf(preventSpawnOn.toUpperCase());
 
-                if (block1.getBlock().getType() == mat || block2.getBlock().getType() == mat ||block3.getBlock().getType() == mat || !checkEmtyXZ(loc.getX(), loc.getZ(), world)) {
-                    safe = false;
-                } else {
-                    safe = true;
-                }
+            if (block1.getBlock().getType() == mat || block2.getBlock().getType() == mat || block3.getBlock().getType() == mat || !checkEmtyXZ(loc.getX(), loc.getZ(), world)) {
+                safe = false;
+            } else {
+                safe = true;
             }
+        }
         return safe;
     }
 
@@ -133,5 +133,14 @@ public class Util {
     public String color(String text) {
         String colourised = text.replaceAll("&(?=[0-9a-fA-FkK])", "\u00a7");
         return colourised;
+    }
+
+    public boolean isDreamDreamWorld(DreamType dtype) {
+        if (dtype == DreamType.DREAMWORLD) {
+            return true;
+        } else if (dtype == DreamType.NIGHTMARE) {
+            return false;
+        }
+        return false;
     }
 }
