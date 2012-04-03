@@ -16,8 +16,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Inventory {
 
-    private DreamZ plugin = DreamZ.getInstance();
+    private DreamZ plugin;
     private FileConfiguration config;
+    
+    public Inventory() {
+        this.plugin = DreamZ.getInstance();
+    }
     
     private void write(File file, ItemStack[] inventory) {
         try {

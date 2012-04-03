@@ -4,19 +4,16 @@ import me.p000ison.dreamz.DreamZ;
 import me.p000ison.dreamz.api.DreamLeaveType;
 import me.p000ison.dreamz.api.DreamType;
 import me.p000ison.dreamz.api.events.DreamZPlayerDreamLeaveEvent;
-import me.p000ison.dreamz.manager.DreamManager;
-import me.p000ison.dreamz.util.Util;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityTargetEvent;
 
 /**
  *
@@ -25,8 +22,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 public class DZEntityListener implements Listener {
 
     private DreamZ plugin;
-    private DreamManager dream = new DreamManager();
-    private Util util = new Util();
     private DreamZPlayerDreamLeaveEvent DPDLE;
 
     public DZEntityListener(DreamZ plugin) {
@@ -43,15 +38,15 @@ public class DZEntityListener implements Listener {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             DamageCause cause = event.getCause();
-            if (dream.isInDream(player)) {
+            if (plugin.getDreamManager().isInDream(player)) {
                 if (cause == DamageCause.VOID) {
                     DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.VOID);
                     plugin.getServer().getPluginManager().callEvent(DPDLE);
 
                     if (player.getWorld() == plugin.getWorldManager().getDreamWorld()) {
-                        dream.leave(player, DreamType.DREAMWORLD, DreamLeaveType.VOID);
+                        plugin.getDreamManager().leave(player, DreamType.DREAMWORLD, DreamLeaveType.VOID);
                     } else if (player.getWorld() == plugin.getWorldManager().getNightMare()) {
-                        dream.leave(player, DreamType.NIGHTMARE, DreamLeaveType.VOID);
+                        plugin.getDreamManager().leave(player, DreamType.NIGHTMARE, DreamLeaveType.VOID);
                     }
                 }
             }
@@ -63,18 +58,18 @@ public class DZEntityListener implements Listener {
             }
 
             if (player.hasPermission("dreamz.escape.damage")) {
-                if (dream.isInDream(player) && plugin.getSettingsManager().isUsingDamageExit()) {
+                if (plugin.getDreamManager().isInDream(player) && plugin.getSettingsManager().isUsingDamageExit()) {
                     if (player.getHealth() <= plugin.getSettingsManager().getDefaultRescueHealth()) {
-                        player.sendMessage(util.color(plugin.getSettingsManager().getDamageEscapeMessage()));
+                        player.sendMessage(plugin.getUtil().color(plugin.getSettingsManager().getDamageEscapeMessage()));
                         event.setDamage(0);
 
                         DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.DEATH);
                         plugin.getServer().getPluginManager().callEvent(DPDLE);
 
                         if (player.getWorld() == plugin.getWorldManager().getDreamWorld()) {
-                            dream.leave(player, DreamType.DREAMWORLD, DreamLeaveType.DEATH);
+                            plugin.getDreamManager().leave(player, DreamType.DREAMWORLD, DreamLeaveType.DEATH);
                         } else if (player.getWorld() == plugin.getWorldManager().getNightMare()) {
-                            dream.leave(player, DreamType.NIGHTMARE, DreamLeaveType.DEATH);
+                            plugin.getDreamManager().leave(player, DreamType.NIGHTMARE, DreamLeaveType.DEATH);
                         }
                     }
                 }

@@ -28,13 +28,12 @@ public class DreamZ extends JavaPlugin {
     private static DreamZ instance;
     private static final Logger logger = Logger.getLogger("Minecraft");
     private static Permission perms = null;
-    private static SettingsManager settingsManager;
-    private static DreamManager dreamManager;
-    private static WorldManager worldManager;
-    private static CommandManager commandManager = new CommandManager();
-    private static Inventory inventory;
-    private Util util = new Util();
-
+    private SettingsManager settingsManager;
+    private DreamManager dreamManager;
+    private WorldManager worldManager;
+    private CommandManager commandManager = new CommandManager();
+    private Inventory inventory;
+    private Util util;
     public HashMap<Player, Location> returnLocation = new HashMap<Player, Location>();
     public HashMap<Player, Integer> schedulers = new HashMap<Player, Integer>();
     public HashMap<Player, Location> deathLocation = new HashMap<Player, Location>();
@@ -52,10 +51,11 @@ public class DreamZ extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        setupManagers();
+
         setupMetrics();
         registerCommands();
         registerEvents();
+        setupManagers();
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             setupPermissions();
         }
@@ -70,10 +70,10 @@ public class DreamZ extends JavaPlugin {
             getWorldManager().createWorld(true);
             getWorldManager().createWorld(false);
         }
-
-        dreamManager = new DreamManager();
         worldManager = new WorldManager();
+        util = new Util();
         inventory = new Inventory();
+        dreamManager = new DreamManager();
     }
 
     public void setupMetrics() {
@@ -132,14 +132,14 @@ public class DreamZ extends JavaPlugin {
     public DreamManager getDreamManager() {
         return dreamManager;
     }
-    
+
     /**
      * @return the util
      */
     public Util getUtil() {
         return util;
     }
-    
+
     /**
      * @return the worldManager
      */

@@ -5,12 +5,12 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import me.p000ison.dreamz.DreamZ;
 import me.p000ison.dreamz.api.DreamType;
-import me.p000ison.dreamz.manager.SettingsManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -19,7 +19,6 @@ import org.bukkit.entity.LivingEntity;
 public class Util {
 
     private static DreamZ plugin;
-    private SettingsManager settings = new SettingsManager();
     private static final HashSet<Byte> AIR_MATERIALS_TARGET = new HashSet<Byte>();
 
     static {
@@ -27,7 +26,7 @@ public class Util {
     }
 
     public Util() {
-        plugin = DreamZ.getInstance();
+        this.plugin = DreamZ.getInstance();
     }
 
     /**
@@ -36,8 +35,8 @@ public class Util {
     public Location randomLoc(World world, DreamType dtype) {
         Location loc;
         do {
-            double X = (settings.getDreamWorldMinX() + (Math.random() * (settings.getDreamWorldMaxX() - settings.getDreamWorldMinX())));
-            double Z = (settings.getDreamWorldMinZ() + (Math.random() * (settings.getDreamWorldMaxZ() - settings.getDreamWorldMinZ())));
+            double X = (plugin.getSettingsManager().getDreamWorldMinX() + (Math.random() * (plugin.getSettingsManager().getDreamWorldMaxX() - plugin.getSettingsManager().getDreamWorldMinX())));
+            double Z = (plugin.getSettingsManager().getDreamWorldMinZ() + (Math.random() * (plugin.getSettingsManager().getDreamWorldMaxZ() - plugin.getSettingsManager().getDreamWorldMinZ())));
             double Y = getHeighestFreeBlockAt((int) X, (int) Z, world, dtype);
             loc = new Location(world, X, Y, Z);
         } while (checkDreamSpawnLocation(loc, loc.getWorld()) == false);
@@ -157,5 +156,32 @@ public class Util {
             System.out.println("Please target a bed!");
         }
         return block.getLocation();
+    }
+    
+    public boolean checkBed(Location loc) {
+        String world = "";
+        if (loc.getWorld().equals(plugin.getWorldManager().getDreamWorld())) {
+            world = "DreamWorld";
+        } else if (loc.getWorld().equals(plugin.getWorldManager().getNightMare())) {
+            world = "NightMare";
+        } 
+        for (String str : plugin.getConfig().getConfigurationSection(world + ".Beds").getKeys(false)) {
+            if ((loc.getX() == plugin.getSettingsManager().getConfig().getDouble(world + ".Beds." + str + ".X")
+                    && loc.getY() == plugin.getSettingsManager().getConfig().getDouble(world + ".Beds." + str + ".Y")
+                    && loc.getZ() == plugin.getSettingsManager().getConfig().getDouble(world + ".Beds." + str + ".Z"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public DreamType getPlayerDreamType(Player player) {
+        if (player.getWorld() == plugin.getWorldManager().getDreamWorld()) {
+            return DreamType.DREAMWORLD;
+        } else if (player.getWorld() == plugin.getWorldManager().getNightMare()) {
+            return DreamType.NIGHTMARE;
+        } else {
+            return DreamType.NOTHING;
+        }
     }
 }

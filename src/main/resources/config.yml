@@ -8,6 +8,7 @@ Global:
     UsingThisWorldCreator: true
     DisableHunger: true
     PlaceBedsInDream: false
+    FakeNetherBeds: true
 DreamWorld:
     Generation:
         Enabled: true            # Will the dreamworld be generated?

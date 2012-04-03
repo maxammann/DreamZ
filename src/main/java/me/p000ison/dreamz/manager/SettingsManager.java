@@ -76,12 +76,13 @@ public final class SettingsManager {
     private boolean DreamWorldGenerateStructures;
     private boolean NightMareGenerateStructures;
     private boolean PlaceBeds;
+    private boolean FakeNetherBeds;
 
     /**
      *
      */
     public SettingsManager() {
-        plugin = DreamZ.getInstance();
+        this.plugin = DreamZ.getInstance();
         config = plugin.getConfig();
         main = new File(getPlugin().getDataFolder() + File.separator + "config.yml");
         load();
@@ -166,7 +167,8 @@ public final class SettingsManager {
         DreamWorldGenerateStructures = getConfig().getBoolean("NightMare.Generation.GenerateStructures");
         NightMareGenerateStructures = getConfig().getBoolean("NightMare.Generation.GenerateStructures");
         PlaceBeds = getConfig().getBoolean("Global.PlaceBedsInDream");
-
+        FakeNetherBeds = getConfig().getBoolean("Global.FakeNetherBeds");
+        
         save();
     }
 
@@ -617,5 +619,12 @@ public final class SettingsManager {
      */
     public boolean isPlaceBeds() {
         return PlaceBeds;
+    }
+
+    /**
+     * @return the FakeNetherBeds
+     */
+    public boolean isFakeNetherBeds() {
+        return FakeNetherBeds;
     }
 }

@@ -1,14 +1,11 @@
 package me.p000ison.dreamz.manager;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 import me.p000ison.dreamz.DreamZ;
 import me.p000ison.dreamz.api.DreamLeaveType;
 import me.p000ison.dreamz.api.DreamType;
 import me.p000ison.dreamz.api.events.DreamZPlayerDreamEnterEvent;
 import me.p000ison.dreamz.api.events.DreamZPlayerDreamLeaveEvent;
-import me.p000ison.dreamz.util.Inventory;
-import me.p000ison.dreamz.util.Util;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerBedEnterEvent;
@@ -22,13 +19,9 @@ public class DreamManager {
     private DreamZ plugin;
     private DreamZPlayerDreamLeaveEvent DPDLE;
     private DreamZPlayerDreamEnterEvent DPDEE;
-    private SettingsManager settings;
-    private Util util = new Util();
-    private Inventory inv = new Inventory();
 
     public DreamManager() {
-        plugin = DreamZ.getInstance();
-        settings = new SettingsManager();
+        this.plugin = DreamZ.getInstance();
     }
 
     /**
@@ -37,7 +30,7 @@ public class DreamManager {
      * @param player the player to teleport
      */
     public void enterDreamInNormal(final Player player) {
-        final DreamType randomDream = util.randomDream(plugin.getSettingsManager().getDreamWorldChance(), plugin.getSettingsManager().getNightMareChance());
+        final DreamType randomDream = plugin.getUtil().randomDream(plugin.getSettingsManager().getDreamWorldChance(), plugin.getSettingsManager().getNightMareChance());
 
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
@@ -46,11 +39,11 @@ public class DreamManager {
                 DPDEE = new DreamZPlayerDreamEnterEvent(player, randomDream);
                 plugin.getServer().getPluginManager().callEvent(DPDEE);
                 enter(player, randomDream);
-                if (settings.isDebugging() == true) {
+                if (plugin.getSettingsManager().isDebugging() == true) {
                     plugin.getLogger().log(Level.INFO, String.format("player teleported enterded %s", randomDream.toString()));
                 }
             }
-        }, (settings.getDelay() * 20));
+        }, (plugin.getSettingsManager().getDelay() * 20));
 
         if (randomDream.equals(DreamType.NOTHING)) {
             DPDEE = new DreamZPlayerDreamEnterEvent(player, randomDream);
@@ -66,53 +59,20 @@ public class DreamManager {
      * @param event event to cancel
      */
     public void enterDreamInDream(Player player, PlayerBedEnterEvent event) {
-        if (settings.isCanEscapeThrowBed()) {
+        if (plugin.getSettingsManager().isCanEscapeThrowBed()) {
             Location loc = event.getBed().getLocation();
-            if (checkBed(loc)) {
+            if (plugin.getUtil().checkBed(loc)) {
                 DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.BED);
                 plugin.getServer().getPluginManager().callEvent(DPDLE);
-                leave(player, DreamType.NOTHING, DreamLeaveType.BED);
+                plugin.getDreamManager().leave(player, player.getWorld().equals(plugin.getWorldManager().getDreamWorld()) ? DreamType.DREAMWORLD : DreamType.NIGHTMARE, DreamLeaveType.BED);
             }
-//                if ((player.getWorld() == plugin.getWorldManager().getDreamWorld()
-//                        && loc.getX() == settings.getDreamWorldBedX()
-//                        && loc.getY() == settings.getDreamWorldBedY()
-//                        && loc.getZ() == settings.getDreamWorldBedZ())
-//                        || (player.getWorld() == plugin.getWorldManager().getDreamWorld()
-//                        && loc.getX() == settings.getNightMareBedX()
-//                        && loc.getY() == settings.getNightMareBedY()
-//                        && loc.getZ() == settings.getNightMareBedZ())) {
-//
-//                    DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.BED);
-//                    plugin.getServer().getPluginManager().callEvent(DPDLE);
-//                    leave(player, DreamType.NOTHING, DreamLeaveType.BED);
-//                }
-//            }  else {
-//            event.setCancelled(true);
-//            player.sendMessage(util.color(settings.getCantEscapeMessage()));
-//            if (settings.isDebugging() == true) {
-//                plugin.getLogger().log(Level.INFO, "player tried to escape");
-        }
-    }
-
-    private boolean checkBed(Location loc) {
-        ArrayList bednames = new ArrayList();
-        for (String str : plugin.getConfig().getConfigurationSection("DreamWorld.Beds").getKeys(false)) {
-            System.out.println(str);
-            bednames.add(str);
-            System.out.println(settings.getConfig().getDouble("DreamWorld.Beds." + str + ".X"));
-            System.out.println(settings.getConfig().getDouble("DreamWorld.Beds." + str + ".Y"));
-            System.out.println(settings.getConfig().getDouble("DreamWorld.Beds." + str + ".Z"));
-            System.out.println("-----------------");
-            System.out.println(loc.getX());
-            System.out.println(loc.getY());
-            System.out.println(loc.getZ());
-            if ((loc.getX() == settings.getConfig().getDouble("DreamWorld.Beds." + str + ".X")
-                    && loc.getY() == settings.getConfig().getDouble("DreamWorld.Beds." + str + ".Y")
-                    && loc.getZ() == settings.getConfig().getDouble("DreamWorld.Beds." + str + ".Z"))) {
-                return true;
+        } else {
+            event.setCancelled(true);
+            player.sendMessage(plugin.getUtil().color(plugin.getSettingsManager().getCantEscapeMessage()));
+            if (plugin.getSettingsManager().isDebugging() == true) {
+                plugin.getLogger().log(Level.INFO, "player tried to escape");
             }
         }
-        return false;
     }
 
     /**
@@ -129,11 +89,11 @@ public class DreamManager {
                 DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.NORMAL);
                 plugin.getServer().getPluginManager().callEvent(DPDLE);
                 leave(player, dtype, DreamLeaveType.NORMAL);
-                if (settings.isDebugging() == true) {
+                if (plugin.getSettingsManager().isDebugging() == true) {
                     plugin.getLogger().log(Level.INFO, "player teleported back");
                 }
             }
-        }, (DreamType.isNightMare() ? settings.getNightMareDuration() * 20 : settings.getDreamWorldDuration() * 20)));
+        }, (DreamType.isNightMare() ? plugin.getSettingsManager().getNightMareDuration() * 20 : plugin.getSettingsManager().getDreamWorldDuration() * 20)));
     }
 
     /**
@@ -160,39 +120,37 @@ public class DreamManager {
 
     public void enter(Player player, DreamType dtype) {
 
-        if (util.isDreamDreamWorld(dtype) ? settings.isDreamWorldRandomSpawn() : settings.isNightMareRandomSpawn()) {
-            player.teleport(util.randomLoc(util.isDreamDreamWorld(dtype) ? plugin.getWorldManager().getDreamWorld() : plugin.getWorldManager().getNightMare(), util.isDreamDreamWorld(dtype) ? DreamType.DREAMWORLD : DreamType.NIGHTMARE));
+        if (plugin.getUtil().isDreamDreamWorld(dtype) ? plugin.getSettingsManager().isDreamWorldRandomSpawn() : plugin.getSettingsManager().isNightMareRandomSpawn()) {
+            player.teleport(plugin.getUtil().randomLoc(plugin.getUtil().isDreamDreamWorld(dtype) ? plugin.getWorldManager().getDreamWorld() : plugin.getWorldManager().getNightMare(), plugin.getUtil().isDreamDreamWorld(dtype) ? DreamType.DREAMWORLD : DreamType.NIGHTMARE));
             player.setNoDamageTicks(40);
         } else {
-            player.teleport(util.isDreamDreamWorld(dtype) ? plugin.getWorldManager().getDreamWorld().getSpawnLocation() : plugin.getWorldManager().getNightMare().getSpawnLocation());
+            player.teleport(plugin.getUtil().isDreamDreamWorld(dtype) ? plugin.getWorldManager().getDreamWorld().getSpawnLocation() : plugin.getWorldManager().getNightMare().getSpawnLocation());
             player.setNoDamageTicks(40);
         }
-        player.sendMessage(util.isDreamDreamWorld(dtype) ? util.color(settings.getEnterDreamWorldMessage()) : util.color(settings.getEnterNightMareMessage()));
-        plugin.getWorldManager().setWeather(util.isDreamDreamWorld(dtype) ? settings.isDreamWorldThundering() : settings.isNightMareThundering(), util.isDreamDreamWorld(dtype) ? settings.isDreamWorldStorm() : settings.isNightMareStorm(), util.isDreamDreamWorld(dtype) ? plugin.getWorldManager().getDreamWorld() : plugin.getWorldManager().getNightMare());
-        if (util.isDreamDreamWorld(dtype) ? settings.isDreamWorldUsingDuration() : settings.isNightMareUsingDuration()) {
+        player.sendMessage(plugin.getUtil().isDreamDreamWorld(dtype) ? plugin.getUtil().color(plugin.getSettingsManager().getEnterDreamWorldMessage()) : plugin.getUtil().color(plugin.getSettingsManager().getEnterNightMareMessage()));
+        plugin.getWorldManager().setWeather(plugin.getUtil().isDreamDreamWorld(dtype) ? plugin.getSettingsManager().isDreamWorldThundering() : plugin.getSettingsManager().isNightMareThundering(), plugin.getUtil().isDreamDreamWorld(dtype) ? plugin.getSettingsManager().isDreamWorldStorm() : plugin.getSettingsManager().isNightMareStorm(), plugin.getUtil().isDreamDreamWorld(dtype) ? plugin.getWorldManager().getDreamWorld() : plugin.getWorldManager().getNightMare());
+        if (plugin.getUtil().isDreamDreamWorld(dtype) ? plugin.getSettingsManager().isDreamWorldUsingDuration() : plugin.getSettingsManager().isNightMareUsingDuration()) {
             startRetrunTimer(player, dtype);
         }
 
         player.setHealth(player.getMaxHealth());
-        inv.save(dtype, player);
-        inv.clearInventory(player, dtype);
+        plugin.getInventory().save(dtype, player);
+        plugin.getInventory().clearInventory(player, dtype);
     }
 
     public void leave(final Player player, DreamType dtype, DreamLeaveType leavetype) {
 
         if (player.isOnline()) {
-            inv.load(dtype, player);
+            plugin.getInventory().load(dtype, player);
             if (plugin.returnLocation.containsKey(player)) {
                 player.teleport(plugin.returnLocation.get(player));
             } else {
-                Location defaultspawn = plugin.getWorldManager().getDefaultWorld().getSpawnLocation();
-                defaultspawn.setY(plugin.getWorldManager().getDefaultWorld().getHighestBlockYAt(plugin.getWorldManager().getDefaultWorld().getSpawnLocation()));
-                player.teleport(defaultspawn);
+                player.teleport(plugin.getWorldManager().getDefaultWorld().getSpawnLocation());
             }
             player.setHealth(player.getMaxHealth());
             player.setNoDamageTicks(40);
             player.setFallDistance(0);
-            player.sendMessage(util.color(settings.getLeaveMessage()));
+            player.sendMessage(plugin.getUtil().color(plugin.getSettingsManager().getLeaveMessage()));
 
             plugin.afterTeleport.put(player, true);
             plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
@@ -209,7 +167,7 @@ public class DreamManager {
             plugin.schedulers.remove(player);
         }
 
-        if (settings.isDebugging() == true) {
+        if (plugin.getSettingsManager().isDebugging() == true) {
             plugin.getLogger().log(Level.INFO, String.format("player teleported left %s", dtype));
         }
     }

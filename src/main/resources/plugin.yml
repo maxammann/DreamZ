@@ -5,13 +5,13 @@ main: me.p000ison.dreamz.DreamZ
 name: DreamZ
 startup: postworld
 url: http://dev.bukkit.org/server-mods/DreamZ/
-version: '0.1.6'
+version: '0.2'
 commands:
   dreamz:
-    description: DreamZ commands
+    description: DreamZ commands.
     usage: |
            Usage:
-           /<command> setbed <dreamworld|nightmare> - Sets the rescue-bed.
+           /<command> setbed <dreamworld|nightmare> <bed-name> - Sets the rescue-bed.
            /<command> reload  - Reloads the Config.
            /<command> enter <dreamworld|nightmare> - Forces you to enter a dream.
            /<command> leave <dreamworld|nightmare> - Forces you to leave a dream.
@@ -20,7 +20,7 @@ permissions:
     description: Allows you to enter a dream.
   dreamz.command.reload:
     description: Allows you to use the command /dreamz reload to reload the config.
-  dreamz.command.set:
+  dreamz.command.setbed:
     description: Allows you to use the command /dreamz set to set the bed in a dream.
   dreamz.command.leave:
     description: Allows you to use the command /dreamz wakeup to escape from the dreamworld.
@@ -39,7 +39,7 @@ permissions:
     children:
       dreamz.enter: true
       dreamz.command.reload: true
-      dreamz.command.set: true
+      dreamz.command.setbed: true
       dreamz.command.leave: true
       dreamz.command.enter: true
       dreamz.escape.damage: true
