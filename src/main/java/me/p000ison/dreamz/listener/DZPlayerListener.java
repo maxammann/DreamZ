@@ -1,23 +1,17 @@
 package me.p000ison.dreamz.listener;
 
 import me.p000ison.dreamz.DreamZ;
-import me.p000ison.dreamz.api.DreamLeaveType;
 import me.p000ison.dreamz.api.DreamType;
 import me.p000ison.dreamz.manager.DreamManager;
 import me.p000ison.dreamz.manager.SettingsManager;
 import me.p000ison.dreamz.util.Util;
-import net.minecraft.server.Item;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -29,45 +23,53 @@ import org.bukkit.util.Vector;
  * @author p000ison
  */
 public class DZPlayerListener implements Listener {
-
+    
     private DreamZ plugin;
     private DreamManager dream = new DreamManager();
     private Util util = new Util();
     private SettingsManager settings = new SettingsManager();
-
+    
     public DZPlayerListener(DreamZ plugin) {
         this.plugin = plugin;
     }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBedInteract(PlayerInteractEvent event) {
-        Block clickedBlock = event.getClickedBlock();
-        if (dream.isInDream(event.getPlayer())) {
-            if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                if (clickedBlock.getType().equals(Material.BED_BLOCK)
-                        && clickedBlock.getWorld().getEnvironment().equals(Environment.NETHER)) {
-                    event.setCancelled(true);
-                    dream.leave(event.getPlayer(), DreamType.NIGHTMARE, DreamLeaveType.BED);
-                }
-            }
-        }
-    }
-
+    
+//    @EventHandler(priority = EventPriority.HIGHEST)
+//    public void onBedInteract(PlayerInteractEvent event) {
+//        Block clickedBlock = event.getClickedBlock();
+//        
+//        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+//            if (clickedBlock.getType().equals(Material.BED_BLOCK)) {
+//                if (dream.isInDream(event.getPlayer())) {
+//                    if (settings.isFakeNetherBeds()) {
+//                        if (clickedBlock.getWorld().getEnvironment().equals(Environment.NETHER)) {
+//                            event.setCancelled(true);
+//                            dream.leave(event.getPlayer(), DreamType.NIGHTMARE, DreamLeaveType.BED);
+//                        }
+//                    }
+//                }
+//                if (settings.isFakeBedsDuringDay()) {
+//                    dream.enterDreamInNormal(event.getPlayer());
+//                }
+//            }
+//        }
+//    }
+    
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBedPlace(BlockPlaceEvent event) {
-        if (dream.isInDream(event.getPlayer())) {
-            if (event.getBlockPlaced().getType().equals(Material.BED_BLOCK)
-                    && event.getBlockPlaced().getWorld().getEnvironment().equals(Environment.NETHER)) {
-                event.setCancelled(true);
-                Block block = event.getBlockPlaced();
-                for (BlockFace face : BlockFace.values()) {
-                    block.getRelative(face).getState().update();
+        if (!settings.isPlaceBeds()) {
+            if (dream.isInDream(event.getPlayer())) {
+                if (event.getBlockPlaced().getType().equals(Material.BED_BLOCK)) {
+                    event.setCancelled(true);
+                    Block block = event.getBlockPlaced();
+                    for (BlockFace face : BlockFace.values()) {
+                        block.getRelative(face).getState().update();
+                    }
+                    event.getPlayer().sendMessage(util.color(settings.getCantPlaceBedsMessage()));
                 }
-                event.getPlayer().sendMessage("You cant place Beds!");
             }
         }
     }
-
+    
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBedEnter(PlayerBedEnterEvent event) {
         Player player = event.getPlayer();
@@ -80,16 +82,16 @@ public class DZPlayerListener implements Listener {
             }
         }
     }
-
+    
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-
+        
         if (player.getWorld() == plugin.getWorldManager().getDreamWorld() || player.getWorld() == plugin.getWorldManager().getNightMare()) {
             plugin.deathLocation.put(player, player.getLocation());
         }
     }
-
+    
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
@@ -121,7 +123,7 @@ public class DZPlayerListener implements Listener {
             }
         }
     }
-
+    
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerWorldChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
@@ -134,17 +136,17 @@ public class DZPlayerListener implements Listener {
             }
         }
     }
-
+    
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-
+        
         if (!player.hasPermission("dreamz.join.noteleportback")) {
             if (dream.isInDreamWorld(player)) {
                 if (plugin.getSettingsManager().isDreamWorldUsingDuration() || plugin.getSettingsManager().isNightMareUsingDuration()) {
                     if (plugin.schedulers.containsKey(player) == false) {
                         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
+                            
                             @Override
                             public void run() {
                                 if (plugin.returnLocation.containsKey(player)) {
@@ -159,14 +161,14 @@ public class DZPlayerListener implements Listener {
             }
         }
     }
-
+    
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerHungerChange(FoodLevelChangeEvent event) {
         if (settings.isDisableHunger() && dream.isInDream((Player) event.getEntity())) {
             event.setCancelled(true);
         }
     }
-
+    
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerSneak(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();

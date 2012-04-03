@@ -26,12 +26,6 @@ public final class SettingsManager {
     private boolean canEscapeThrowBed;
     private boolean NightMareEnabled;
     private boolean DreamWorldEnabled;
-    private double DreamWorldBedX;
-    private double DreamWorldBedY;
-    private double DreamWorldBedZ;
-    private double NightMareBedX;
-    private double NightMareBedY;
-    private double NightMareBedZ;
     private int Delay;
     private String DreamWorldGenerator;
     private String NightMareGenerator;
@@ -62,6 +56,7 @@ public final class SettingsManager {
     private String CantEscapeMessage;
     private String EnterDreamWorldMessage;
     private String EnterNightMareMessage;
+    private String CantPlaceBedsMessage;
     private String LeaveMessage;
     private String DamageEscapeMessage;
     private int NightMareFlyMultiplier;
@@ -80,6 +75,7 @@ public final class SettingsManager {
     private int NightMareWorldHeight;
     private boolean DreamWorldGenerateStructures;
     private boolean NightMareGenerateStructures;
+    private boolean PlaceBeds;
 
     /**
      *
@@ -121,12 +117,6 @@ public final class SettingsManager {
         Debugging = getConfig().getBoolean("Global.Debugging");
         NightMareEnabled = getConfig().getBoolean("NightMare.Generation.Enabled");
         DreamWorldEnabled = getConfig().getBoolean("DreamWorld.Generation.Enabled");
-        DreamWorldBedX = getConfig().getDouble("DreamWorld.Bed.X");
-        DreamWorldBedY = getConfig().getDouble("DreamWorld.Bed.Y");
-        DreamWorldBedZ = getConfig().getDouble("DreamWorld.Bed.Z");
-        NightMareBedX = getConfig().getDouble("NightMare.Bed.X");
-        NightMareBedY = getConfig().getDouble("NightMare.Bed.Y");
-        NightMareBedZ = getConfig().getDouble("NightMare.Bed.Z");
         DreamWorldGenerator = getConfig().getString("DreamWorld.Generation.Generator");
         NightMareGenerator = getConfig().getString("NightMare.Generation.Generator");
         NightMareUsingDuration = getConfig().getBoolean("NightMare.UsingDuration");
@@ -153,7 +143,8 @@ public final class SettingsManager {
         NightMareStorm = getConfig().getBoolean("NightMare.Storm");
         DreamWorldPassiveMobs = getConfig().getBoolean("DreamWorld.PassiveMonsters");
         NighMarePassiveMobs = getConfig().getBoolean("NightMare.PassiveMonsters");
-        CantEscapeMessage = (getConfig().getString("Messages.CantEscapeMessage"));
+        CantEscapeMessage = getConfig().getString("Messages.CantEscapeMessage");
+        CantPlaceBedsMessage = getConfig().getString("Messages.CantPlaceBedsMessage");
         EnterDreamWorldMessage = getConfig().getString("Messages.EnterDreamWorldMessage");
         EnterNightMareMessage = getConfig().getString("Messages.EnterNightMareMessage");
         LeaveMessage = getConfig().getString("Messages.LeaveMessage");
@@ -174,6 +165,7 @@ public final class SettingsManager {
         NightMareWorldHeight = getConfig().getInt("NightMare.Spawning.SpawnArea.WorldHeight");
         DreamWorldGenerateStructures = getConfig().getBoolean("NightMare.Generation.GenerateStructures");
         NightMareGenerateStructures = getConfig().getBoolean("NightMare.Generation.GenerateStructures");
+        PlaceBeds = getConfig().getBoolean("Global.PlaceBedsInDream");
 
         save();
     }
@@ -275,48 +267,6 @@ public final class SettingsManager {
      */
     public boolean isDreamWorldEnabled() {
         return DreamWorldEnabled;
-    }
-
-    /**
-     * @return the DreamWorldBedX
-     */
-    public double getDreamWorldBedX() {
-        return DreamWorldBedX;
-    }
-
-    /**
-     * @return the DreamWorldBedY
-     */
-    public double getDreamWorldBedY() {
-        return DreamWorldBedY;
-    }
-
-    /**
-     * @return the DreamWorldBedZ
-     */
-    public double getDreamWorldBedZ() {
-        return DreamWorldBedZ;
-    }
-
-    /**
-     * @return the NightMareBedX
-     */
-    public double getNightMareBedX() {
-        return NightMareBedX;
-    }
-
-    /**
-     * @return the NightMareBedY
-     */
-    public double getNightMareBedY() {
-        return NightMareBedY;
-    }
-
-    /**
-     * @return the NightMareBedZ
-     */
-    public double getNightMareBedZ() {
-        return NightMareBedZ;
     }
 
     /**
@@ -653,5 +603,19 @@ public final class SettingsManager {
      */
     public boolean isNightMareGenerateStructures() {
         return NightMareGenerateStructures;
+    }
+
+    /**
+     * @return the CantPlaceBedsMessage
+     */
+    public String getCantPlaceBedsMessage() {
+        return CantPlaceBedsMessage;
+    }
+
+    /**
+     * @return the PlaceBeds
+     */
+    public boolean isPlaceBeds() {
+        return PlaceBeds;
     }
 }

@@ -1,5 +1,6 @@
 package me.p000ison.dreamz.manager;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import me.p000ison.dreamz.DreamZ;
 import me.p000ison.dreamz.api.DreamLeaveType;
@@ -67,26 +68,51 @@ public class DreamManager {
     public void enterDreamInDream(Player player, PlayerBedEnterEvent event) {
         if (settings.isCanEscapeThrowBed()) {
             Location loc = event.getBed().getLocation();
-            if ((player.getWorld() == plugin.getWorldManager().getDreamWorld()
-                    && loc.getX() == settings.getDreamWorldBedX()
-                    && loc.getY() == settings.getDreamWorldBedY()
-                    && loc.getZ() == settings.getDreamWorldBedZ())
-                    || (player.getWorld() == plugin.getWorldManager().getDreamWorld()
-                    && loc.getX() == settings.getNightMareBedX()
-                    && loc.getY() == settings.getNightMareBedY()
-                    && loc.getZ() == settings.getNightMareBedZ())) {
-
+            if (checkBed(loc)) {
                 DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.BED);
                 plugin.getServer().getPluginManager().callEvent(DPDLE);
                 leave(player, DreamType.NOTHING, DreamLeaveType.BED);
             }
-        } else {
-            event.setCancelled(true);
-            player.sendMessage(util.color(settings.getCantEscapeMessage()));
-            if (settings.isDebugging() == true) {
-                plugin.getLogger().log(Level.INFO, "player tried to escape");
+//                if ((player.getWorld() == plugin.getWorldManager().getDreamWorld()
+//                        && loc.getX() == settings.getDreamWorldBedX()
+//                        && loc.getY() == settings.getDreamWorldBedY()
+//                        && loc.getZ() == settings.getDreamWorldBedZ())
+//                        || (player.getWorld() == plugin.getWorldManager().getDreamWorld()
+//                        && loc.getX() == settings.getNightMareBedX()
+//                        && loc.getY() == settings.getNightMareBedY()
+//                        && loc.getZ() == settings.getNightMareBedZ())) {
+//
+//                    DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.BED);
+//                    plugin.getServer().getPluginManager().callEvent(DPDLE);
+//                    leave(player, DreamType.NOTHING, DreamLeaveType.BED);
+//                }
+//            }  else {
+//            event.setCancelled(true);
+//            player.sendMessage(util.color(settings.getCantEscapeMessage()));
+//            if (settings.isDebugging() == true) {
+//                plugin.getLogger().log(Level.INFO, "player tried to escape");
+        }
+    }
+
+    private boolean checkBed(Location loc) {
+        ArrayList bednames = new ArrayList();
+        for (String str : plugin.getConfig().getConfigurationSection("DreamWorld.Beds").getKeys(false)) {
+            System.out.println(str);
+            bednames.add(str);
+            System.out.println(settings.getConfig().getDouble("DreamWorld.Beds." + str + ".X"));
+            System.out.println(settings.getConfig().getDouble("DreamWorld.Beds." + str + ".Y"));
+            System.out.println(settings.getConfig().getDouble("DreamWorld.Beds." + str + ".Z"));
+            System.out.println("-----------------");
+            System.out.println(loc.getX());
+            System.out.println(loc.getY());
+            System.out.println(loc.getZ());
+            if ((loc.getX() == settings.getConfig().getDouble("DreamWorld.Beds." + str + ".X")
+                    && loc.getY() == settings.getConfig().getDouble("DreamWorld.Beds." + str + ".Y")
+                    && loc.getZ() == settings.getConfig().getDouble("DreamWorld.Beds." + str + ".Z"))) {
+                return true;
             }
         }
+        return false;
     }
 
     /**

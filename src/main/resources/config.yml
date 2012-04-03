@@ -7,6 +7,7 @@ Global:
     UsingDamageExit: true    # Can you exit a dream, when you reach the DefaultRescueHealth limit?
     UsingThisWorldCreator: true
     DisableHunger: true
+    PlaceBedsInDream: false
 DreamWorld:
     Generation:
         Enabled: true            # Will the dreamworld be generated?
@@ -34,10 +35,11 @@ DreamWorld:
             MaxZ: 100
             MinZ: -100
             WorldHeight: 258
-    Bed:                     # The Bed to escape
-        X: 0
-        Y: 70
-        Z: 0
+    Beds:                     # The Bed to escape
+#        1:
+#            X: 0
+#            Y: 70
+#            Z: 0
 NightMare:
     Generation:
         Enabled: true            # Will the dreamworld be generated?
@@ -65,13 +67,15 @@ NightMare:
             MaxZ: 100
             MinZ: -100
             WorldHeight: 128
-    Bed:                     # The Bed to escape
-        X: 0
-        Y: 70
-        Z: 0
+    Beds:                     # The Bed to escape
+#        1:
+#            X: 0
+#            Y: 70
+#            Z: 0
 Messages:
     CantEscapeMessage: '&4 You cant escape!'
     EnterDreamWorldMessage: '&4 You entered the Dreamworld!'
     EnterNightMareMessage: '&4 You entered the Nightmare!'
     LeaveMessage: '&4 You left the dream!'
+    CantPlaceBedsMessage: '&4 You can not place a bed in a dream!'
     DamageEscapeMessage: '&4 Puhhh, this was close!'

@@ -13,6 +13,7 @@ import me.p000ison.dreamz.manager.SettingsManager;
 import me.p000ison.dreamz.manager.WorldManager;
 import me.p000ison.dreamz.manager.commands.*;
 import me.p000ison.dreamz.util.Inventory;
+import me.p000ison.dreamz.util.Util;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -32,6 +33,8 @@ public class DreamZ extends JavaPlugin {
     private static WorldManager worldManager;
     private static CommandManager commandManager = new CommandManager();
     private static Inventory inventory;
+    private Util util = new Util();
+
     public HashMap<Player, Location> returnLocation = new HashMap<Player, Location>();
     public HashMap<Player, Integer> schedulers = new HashMap<Player, Integer>();
     public HashMap<Player, Location> deathLocation = new HashMap<Player, Location>();
@@ -129,7 +132,14 @@ public class DreamZ extends JavaPlugin {
     public DreamManager getDreamManager() {
         return dreamManager;
     }
-
+    
+    /**
+     * @return the util
+     */
+    public Util getUtil() {
+        return util;
+    }
+    
     /**
      * @return the worldManager
      */
