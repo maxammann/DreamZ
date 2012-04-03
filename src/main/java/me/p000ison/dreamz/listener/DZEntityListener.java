@@ -6,16 +6,17 @@ import me.p000ison.dreamz.api.DreamType;
 import me.p000ison.dreamz.api.events.DreamZPlayerDreamLeaveEvent;
 import me.p000ison.dreamz.manager.DreamManager;
 import me.p000ison.dreamz.util.Util;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityTargetEvent;
 
 /**
  *

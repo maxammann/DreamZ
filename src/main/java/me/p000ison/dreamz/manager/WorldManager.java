@@ -36,7 +36,7 @@ public class WorldManager {
         if (dreamworld ? plugin.getSettingsManager().isDreamWorldEnabled() : plugin.getSettingsManager().isNightMareEnabled()) {
             try {
                 plugin.getLogger().log(Level.INFO, String.format("Loading: %s", dreamworld ? getDreamWorldName() : getNightMareName()));
-                wc = new WorldCreator(getDreamWorldName());
+                wc = new WorldCreator(dreamworld ? getDreamWorldName() : getNightMareName());
                 if (plugin.getSettingsManager().getDreamWorldGenerator() != null && !"DEFAULT".equalsIgnoreCase(plugin.getSettingsManager().getDreamWorldGenerator())) {
                     wc.generator(plugin.getSettingsManager().getDreamWorldGenerator());
                 }

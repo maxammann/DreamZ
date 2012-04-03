@@ -1,14 +1,24 @@
 package me.p000ison.dreamz.listener;
 
 import me.p000ison.dreamz.DreamZ;
+import me.p000ison.dreamz.api.DreamLeaveType;
 import me.p000ison.dreamz.api.DreamType;
 import me.p000ison.dreamz.manager.DreamManager;
 import me.p000ison.dreamz.manager.SettingsManager;
 import me.p000ison.dreamz.util.Util;
+import net.minecraft.server.Item;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
@@ -30,7 +40,36 @@ public class DZPlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBedEnter(final PlayerBedEnterEvent event) {
+    public void onBedInteract(PlayerInteractEvent event) {
+        Block clickedBlock = event.getClickedBlock();
+        if (dream.isInDream(event.getPlayer())) {
+            if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                if (clickedBlock.getType().equals(Material.BED_BLOCK)
+                        && clickedBlock.getWorld().getEnvironment().equals(Environment.NETHER)) {
+                    event.setCancelled(true);
+                    dream.leave(event.getPlayer(), DreamType.NIGHTMARE, DreamLeaveType.BED);
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBedPlace(BlockPlaceEvent event) {
+        if (dream.isInDream(event.getPlayer())) {
+            if (event.getBlockPlaced().getType().equals(Material.BED_BLOCK)
+                    && event.getBlockPlaced().getWorld().getEnvironment().equals(Environment.NETHER)) {
+                event.setCancelled(true);
+                Block block = event.getBlockPlaced();
+                for (BlockFace face : BlockFace.values()) {
+                    block.getRelative(face).getState().update();
+                }
+                event.getPlayer().sendMessage("You cant place Beds!");
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBedEnter(PlayerBedEnterEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission("dreamz.enter")) {
             if (dream.isInDreamWorld(player)) {
