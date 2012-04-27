@@ -1,7 +1,7 @@
 author: p000ison
 database: false
 description: Allows you to enter a DreamWorld/NightMareWorld.
-main: me.p000ison.dreamz.DreamZ
+main: com.p000ison.dev.dreamz.DreamZ
 name: DreamZ
 startup: postworld
 url: http://dev.bukkit.org/server-mods/DreamZ/

@@ -9,65 +9,59 @@ Global:
     DisableHunger: true
     PlaceBedsInDream: false
     FakeNetherBeds: true
-DreamWorld:
+    FakeBedsDuringDay: false
+dreams:
+  DreamWorld:
     Generation:
-        Enabled: true            # Will the dreamworld be generated?
-        GenerateStructures: false
-        Name: dreamworld         # Name of the dreamworld
-        Type: NORMAL             # NORMAL, NETHER or THE_END
-        Generator: SkylandsPlus      # Generator of another plugin
-        Seed: 123456789          # Seed for the world.
-    Chance: 50               # Chance to enter dreamworld.
-    SaveInventory: true
-    ClearInventory: true
-    UsingDuration: true      # Using duration to get back?
-    Duration: 60             # How long you'll stay in dreamworld (in secounds)
-    Thundering: false        # Thundering in the dreamworld?
-    Storm: false             # Storm in the dreamworld?
-    PassiveMonsters: true    # Should the agressive mobs be passice
+      Enabled: true
+      GenerateStructures: false
+      Name: dreamworld
+      Environment: NORMAL
+      Generator: SkylandsPlus
+      Seed: 123456789
+    Chance: 50
+    UsingDuration: true
+    Duration: 60
+    Thundering: false
+    Storming: false
+    PassiveMonsters: true
     FlyMultiplier: 1
     Spawning:
-        RespawnInDream: true
-        RespawnAtDeathPoint: false
-        UseRandomSpawn: true     # Use a random spawn.
-        SpawnArea:               # Spawnarea for randomSpawn.
-            MaxX: 100
-            MinX: -100
-            MaxZ: 100
-            MinZ: -100
-            WorldHeight: 258
-    Beds:                     # The Bed to escape
-#        1:
-#            X: 0
-#            Y: 70
-#            Z: 0
-NightMare:
+      RespawnInDream: true
+      RespawnAtDeathPoint: false
+      RandomSpawn: true
+      UseRandomSpawn: true
+      SpawnArea:
+        MaxX: 100
+        MinX: -100
+        MaxZ: 100
+        MinZ: -100
+        WorldHeight: 258
+  NightMare:
     Generation:
-        Enabled: true            # Will the dreamworld be generated?
-        GenerateStructures: false
-        Name: nightmare          # Name of the dreamworld
-        Type: NETHER             # NORMAL, NETHER or THE_END
-        Generator: DEFAULT       # Generator of another plugin
-        Seed: 123456789          # Seed for the world.
+      Enabled: true            # Will the dreamworld be generated?
+      GenerateStructures: false
+      Name: nightmare          # Name of the dreamworld
+      Type: NETHER             # NORMAL, NETHER or THE_END
+      Generator: DEFAULT       # Generator of another plugin
+      Seed: 123456789          # Seed for the world.
     Chance: 50               # Chance to enter nightmare.
-    SaveInventory: true
-    ClearInventory: true
     UsingDuration: true      # Using duration to get back?
     Duration: 60             # How long you'll stay in dreamworld (in secounds)
     Thundering: true         # Thundering in the nightmare?
-    Storm: true              # Storm in the dreamworld?
+    Storming: true              # Storm in the dreamworld?
     PassiveMonsters: false   # Should the agressive mobs be passice
     FlyMultiplier: 0
     Spawning:
-        RespawnInDream: true
-        RespawnAtDeathPoint: false
-        UseRandomSpawn: true     # Use a random spawn.
-        SpawnArea:               # Spawnarea for randomSpawn.
-            MaxX: 100
-            MinX: -100
-            MaxZ: 100
-            MinZ: -100
-            WorldHeight: 128
+      RespawnInDream: true
+      RespawnAtDeathPoint: false
+      UseRandomSpawn: true     # Use a random spawn.
+      SpawnArea:               # Spawnarea for randomSpawn.
+        MaxX: 100
+        MinX: -100
+        MaxZ: 100
+        MinZ: -100
+        WorldHeight: 128
     Beds:                     # The Bed to escape
 #        1:
 #            X: 0
@@ -75,8 +69,7 @@ NightMare:
 #            Z: 0
 Messages:
     CantEscapeMessage: '&4 You cant escape!'
-    EnterDreamWorldMessage: '&4 You entered the Dreamworld!'
-    EnterNightMareMessage: '&4 You entered the Nightmare!'
-    LeaveMessage: '&4 You left the dream!'
+    EnterDreamMessage: '&4 You entered the %s!'
+    LeaveDreamMessage: '&4 You left the %s!'
     CantPlaceBedsMessage: '&4 You can not place a bed in a dream!'
     DamageEscapeMessage: '&4 Puhhh, this was close!'
