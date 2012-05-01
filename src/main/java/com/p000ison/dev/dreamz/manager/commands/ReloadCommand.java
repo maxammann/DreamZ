@@ -27,7 +27,7 @@ public class ReloadCommand extends BasicCommand {
         long start = System.nanoTime();
         plugin.getSettingsManager().load();
         long end = System.nanoTime();
-        sender.sendMessage(String.format(ChatColor.GREEN + "Config Reloaded!", (end - start) / 1000000000.0));
+        sender.sendMessage(String.format(ChatColor.GREEN + "Config Reloaded! (%s s)", (end - start) / 1000000000.0));
         return true;
     }
 }

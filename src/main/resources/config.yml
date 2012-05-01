@@ -12,6 +12,7 @@ Global:
     FakeBedsDuringDay: false
 dreams:
   DreamWorld:
+    DreamType: DEFAULT
     Generation:
       Enabled: true
       GenerateStructures: false
@@ -38,6 +39,7 @@ dreams:
         MinZ: -100
         WorldHeight: 258
   NightMare:
+    DreamType: DEFAULT
     Generation:
       Enabled: true            # Will the dreamworld be generated?
       GenerateStructures: false
@@ -73,3 +75,4 @@ Messages:
     LeaveDreamMessage: '&4 You left the %s!'
     CantPlaceBedsMessage: '&4 You can not place a bed in a dream!'
     DamageEscapeMessage: '&4 Puhhh, this was close!'
+ConfigVersion: 1.0

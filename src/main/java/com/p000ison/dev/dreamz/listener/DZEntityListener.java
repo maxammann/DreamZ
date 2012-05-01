@@ -4,7 +4,6 @@ import com.p000ison.dev.dreamz.DreamZ;
 import com.p000ison.dev.dreamz.api.DreamLeaveType;
 import com.p000ison.dev.dreamz.api.events.DreamZPlayerDreamLeaveEvent;
 import com.p000ison.dev.dreamz.util.Util;
-import com.p000ison.dev.dreamz.util.dUtil;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -41,8 +40,7 @@ public class DZEntityListener implements Listener {
             DamageCause cause = event.getCause();
             if (plugin.getDreamManager().isInDream(player)) {
                 if (cause == DamageCause.VOID) {
-                    DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.VOID);
-                    plugin.getServer().getPluginManager().callEvent(DPDLE);
+                    plugin.getServer().getPluginManager().callEvent(new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.VOID));
 
                 }
             }
@@ -58,8 +56,7 @@ public class DZEntityListener implements Listener {
                     if (player.getHealth() <= plugin.getSettingsManager().getDefaultRescueHealth()) {
                         player.sendMessage(Util.color(plugin.getSettingsManager().getDamageEscapeMessage()));
                         event.setDamage(0);
-                        DPDLE = new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.DEATH);
-                        plugin.getServer().getPluginManager().callEvent(DPDLE);
+                        plugin.getServer().getPluginManager().callEvent(new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.DEATH));
 
                     }
                 }
@@ -78,7 +75,7 @@ public class DZEntityListener implements Listener {
             }
 
             if (target != null && entity != null) {
-                if (dUtil.getDreams(plugin.getSettingsManager().getConfig()).contains(event.getEntity().getWorld().getName()) && plugin.getSettingsManager().getConfig().getBoolean("dreams." + event.getEntity().getWorld().getName() + ".PassiveMonsters")) {
+                if (plugin.getDreamManager().isInDream(target) && plugin.getSettingsManager().getConfig().getBoolean("dreams." + plugin.getDreamManager().getActiveDream(target).getDream() + ".PassiveMonsters")) {
                     event.setCancelled(true);
                 }
             }
@@ -95,7 +92,7 @@ public class DZEntityListener implements Listener {
             }
 
             if (target != null) {
-                if (dUtil.getDreams(plugin.getSettingsManager().getConfig()).contains(event.getEntity().getWorld().getName()) && plugin.getSettingsManager().getConfig().getBoolean("dreams." + event.getEntity().getWorld().getName() + ".PassiveMonsters")) {
+                if (plugin.getDreamManager().isInDream(target) && plugin.getSettingsManager().getConfig().getBoolean("dreams." + plugin.getDreamManager().getActiveDream(target).getDream() + ".PassiveMonsters")) {
                     event.setCancelled(true);
                 }
             }

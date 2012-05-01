@@ -1,6 +1,7 @@
 package com.p000ison.dev.dreamz.manager.commands;
 
 import com.p000ison.dev.dreamz.DreamZ;
+import com.p000ison.dev.dreamz.util.dUtil;
 import java.util.Map;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,7 +41,6 @@ public class InfoCommand extends BasicCommand {
         }
         
         sender.sendMessage("--------------------------------------");
-        
         return true;
     }
 }

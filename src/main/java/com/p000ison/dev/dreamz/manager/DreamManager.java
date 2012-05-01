@@ -71,7 +71,11 @@ public class DreamManager {
     }
 
     public boolean isInDreamWorld(Player player) {
-        return dUtil.getDreams(plugin.getSettingsManager().getConfig()).contains(player.getWorld().getName());
+        return dUtil.getDreams(plugin.getSettingsManager().getConfig()).contains(player.getWorld().getName().toLowerCase());
+    }
+    
+    public Dream getActiveDream(Player player) {
+        return plugin.DREAMS.get(player);
     }
 
     public boolean isInDream(Player player) {

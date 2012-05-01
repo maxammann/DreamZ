@@ -18,8 +18,6 @@ public class sUtil {
      */
     public static Location randomSpawn(FileConfiguration config, World world, List<String> preventSpawnOnBlocks) {
         Location loc = null;
-        int tries = 0;
-        int maxtries = 1000;
         do {
 
             double X = (config.getDouble("dreams." + world.getName() + ".Spawning.SpawnArea.MinX")
@@ -31,13 +29,11 @@ public class sUtil {
                     - config.getDouble("dreams." + world.getName() + ".Spawning.SpawnArea.MinZ"))));
 
             double Y = getHeighestFreeBlockAt(config, (int) X, (int) Z, world);
-            tries++;
-            if (tries <= maxtries) {
-                loc = new Location(world, X, Y, Z);
-            }
-            System.out.println(tries);
+            loc = new Location(world, X, Y, Z);
 
-        } while (!checkDreamSpawnLocation(loc, world, preventSpawnOnBlocks) /*&& maxtries >= tries*/);
+        } while (!checkDreamSpawnLocation(loc, world, preventSpawnOnBlocks) /*
+                 * && maxtries >= tries
+                 */);
         return loc;
     }
 

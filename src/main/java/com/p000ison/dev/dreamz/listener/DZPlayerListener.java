@@ -9,7 +9,6 @@ import com.p000ison.dev.dreamz.util.Util;
 import com.p000ison.dev.dreamz.util.dUtil;
 import com.p000ison.dev.dreamz.util.sUtil;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
@@ -112,29 +111,28 @@ public class DZPlayerListener implements Listener {
     public void onPlayerRespawn(final PlayerRespawnEvent event) {
         final Player player = event.getPlayer();
         if (player.hasPermission("dreamz.enter")) {
-            for (final String dream : dUtil.getDreams(plugin.getSettingsManager().getConfig())) {
-                if (player.getWorld().getName().equalsIgnoreCase(dream)) {
-                    if (plugin.getSettingsManager().getConfig().getBoolean("dreams." + dream + ".RespawnInDream")) {
-                        if (plugin.getSettingsManager().getConfig().getBoolean("dreams." + dream + ".Spawning.UseRandomSpawn")) {
-                            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            if (plugin.getDreamManager().isInDream(player)) {
+                final Dream activedream = plugin.getDreamManager().getActiveDream(player);
+                if (plugin.getSettingsManager().getConfig().getBoolean("dreams." + activedream.getDream() + ".RespawnInDream")) {
+                    if (plugin.getSettingsManager().getConfig().getBoolean("dreams." + activedream.getDream() + ".Spawning.UseRandomSpawn")) {
+                        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
-                                @Override
-                                public void run() {
-                                    Location loc = sUtil.randomSpawn(plugin.getSettingsManager().getConfig(), Bukkit.getWorld(dream), plugin.getSettingsManager().getPreventSpawnOn());
-                                    if (loc != null) {
-                                        event.setRespawnLocation(loc);
-                                    } else {
-                                        player.sendMessage("No randomspawn found!");
-                                    }
+                            @Override
+                            public void run() {
+                                Location loc = sUtil.randomSpawn(plugin.getSettingsManager().getConfig(), activedream.getDreamWorld(), plugin.getSettingsManager().getPreventSpawnOn());
+                                if (loc != null) {
+                                    event.setRespawnLocation(loc);
+                                } else {
+                                    player.sendMessage("No randomspawn found!");
                                 }
-                            });
-                        } else {
-                            event.setRespawnLocation(Bukkit.getWorld(dream).getSpawnLocation());
-                        }
-                    } else if (plugin.getSettingsManager().getConfig().getBoolean("dreams." + dream + ".RespawnAtDeathPoint")) {
-                        if (plugin.DEATH_LOCATIONS.containsKey(player)) {
-                            event.setRespawnLocation(plugin.DEATH_LOCATIONS.get(player));
-                        }
+                            }
+                        });
+                    } else {
+                        event.setRespawnLocation(activedream.getDreamWorld().getSpawnLocation());
+                    }
+                } else if (plugin.getSettingsManager().getConfig().getBoolean("dreams." + activedream.getDream() + ".RespawnAtDeathPoint")) {
+                    if (plugin.DEATH_LOCATIONS.containsKey(player)) {
+                        event.setRespawnLocation(plugin.DEATH_LOCATIONS.get(player));
                     }
                 }
             }
@@ -147,7 +145,7 @@ public class DZPlayerListener implements Listener {
         if (player.hasPermission("dreamz.enter")) {
             for (String dream : dUtil.getDreams(plugin.getSettingsManager().getConfig())) {
                 if (dream.equalsIgnoreCase(event.getFrom().getName())) {
-                    if (plugin.getDreamManager().isInDream(player)) {
+                    if (plugin.getDreamManager().isInDream(player) && !plugin.DREAMS.containsKey(player)) {
                         plugin.getServer().getScheduler().cancelTask(plugin.SCHEDULERS.get(player));
                         plugin.getServer().getPluginManager().callEvent(new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.WORLD_CHANGE));
                     }
@@ -193,12 +191,8 @@ public class DZPlayerListener implements Listener {
     public void onPlayerHungerChange(FoodLevelChangeEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            for (String dream : dUtil.getDreams(plugin.getSettingsManager().getConfig())) {
-                if (plugin.getSettingsManager().getConfig().getBoolean("dreams." + dream + ".DisableHunger")) {
-                    if (player.getWorld().getName().equalsIgnoreCase(dream)) {
-                        event.setCancelled(true);
-                    }
-                }
+            if (plugin.getDreamManager().isInDream(player) && plugin.getSettingsManager().getConfig().getBoolean("dreams." + plugin.getDreamManager().getActiveDream(player).getDream() + ".DisableHunger")) {
+                event.setCancelled(true);
             }
         }
     }
@@ -220,15 +214,13 @@ public class DZPlayerListener implements Listener {
         Player player = event.getPlayer();
         Vector vec;
         if (player.hasPermission("dreamz.fly")) {
-            for (String dream : dUtil.getDreams(plugin.getSettingsManager().getConfig())) {
-                if (player.getWorld().getName().equalsIgnoreCase(dream) && plugin.getSettingsManager().getConfig().getDouble("dreams." + dream + ".FlyMultiplier") != -1) {
-                    vec = player.getLocation().getDirection().multiply(plugin.getSettingsManager().getConfig().getDouble("dreams." + dream + ".FlyMultiplier" + 5));
-                    player.setAllowFlight(true);
-                    vec.setY(vec.getY() + 0.75);
-                    player.setVelocity(vec);
-                    player.setFallDistance(0);
-                    player.setAllowFlight(false);
-                }
+            if (plugin.getDreamManager().isInDream(player) && plugin.getSettingsManager().getConfig().getDouble("dreams." + plugin.getDreamManager().getActiveDream(player).getDream() + ".FlyMultiplier") != -1) {
+                vec = player.getLocation().getDirection().multiply(plugin.getSettingsManager().getConfig().getDouble("dreams." + plugin.getDreamManager().getActiveDream(player).getDream() + ".FlyMultiplier" + 5));
+                player.setAllowFlight(true);
+                vec.setY(vec.getY() + 0.75);
+                player.setVelocity(vec);
+                player.setFallDistance(0);
+                player.setAllowFlight(false);
             }
         }
     }

@@ -22,7 +22,7 @@ public class EnterCommand extends BasicCommand {
         setUsage("/dreamz enter §9<dream>");
         setArgumentRange(1, 1);
         setIdentifiers("enter", "sleep");
-        setPermission("dreamz.command.enter");      
+        setPermission("dreamz.command.enter");
     }
 
     @Override
@@ -30,7 +30,7 @@ public class EnterCommand extends BasicCommand {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (args.length == 1) {
-                if (dUtil.getDreams(plugin.getSettingsManager().getConfig()).contains(args[0])) {
+                if (dUtil.isDreamAviable(args[0], plugin.getSettingsManager().getConfig())) {
                     plugin.getServer().getPluginManager().callEvent(new DreamZPlayerDreamEnterEvent(player, new Dream(args[0], true)));
                 }
             }

@@ -15,13 +15,11 @@ public class DreamZPlayerDreamLeaveEvent extends Event implements Cancellable {
     private Player player;
     private boolean Cancelled = false;
     private DreamLeaveType leavetype;
-    private String dream;
     private static final HandlerList handlers = new HandlerList();
 
     public DreamZPlayerDreamLeaveEvent(Player player, DreamLeaveType leavetype) {
         this.player = player;
         this.leavetype = leavetype;
-        this.dream = player.getWorld().getName();
     }
 
     @Override
@@ -53,13 +51,5 @@ public class DreamZPlayerDreamLeaveEvent extends Event implements Cancellable {
 
     public void setLeavetype(DreamLeaveType leavetype) {
         this.leavetype = leavetype;
-    }
-
-    public String getDream() {
-        return dream;
-    }
-
-    public void setDream(String dream) {
-        this.dream = dream;
     }
 }

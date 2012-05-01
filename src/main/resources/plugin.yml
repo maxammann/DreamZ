@@ -5,7 +5,7 @@ main: com.p000ison.dev.dreamz.DreamZ
 name: DreamZ
 startup: postworld
 url: http://dev.bukkit.org/server-mods/DreamZ/
-version: '0.2'
+version: '0.3'
 commands:
   dreamz:
     description: DreamZ commands.
@@ -27,6 +27,10 @@ permissions:
   dreamz.command.enter:
     description: Allows you to use the command /dreamz sleep to enter the dream.
   dreamz.escape.damage:
+    description: Allows you to escape throw damage cause.
+  dreamz.command.set:
+    description: Allows you to escape throw damage cause.
+  dreamz.command.info:
     description: Allows you to escape throw damage cause.
   dreamz.fly:
     description: Allows you to fly.

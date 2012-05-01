@@ -62,28 +62,25 @@ public class SetCommand extends BasicCommand {
                 plugin.getSettingsManager().getConfig().set("dreams." + args[1] + ".Spawning.SpawnArea.MaxZ", 100);
                 plugin.getSettingsManager().getConfig().set("dreams." + args[1] + ".Spawning.SpawnArea.MinZ", -100);
                 plugin.getSettingsManager().getConfig().set("dreams." + args[1] + ".Spawning.SpawnArea.WorldHeight", 256);
+                plugin.getSettingsManager().getConfig().set("dreams." + args[1] + ".DreamType", "DEFAULT");
                 sender.sendMessage(ChatColor.GREEN + "Dream " + args[1] + " set! Please target always the pillow of the bed!");
                 plugin.getSettingsManager().save();
             }
         } else if (args.length == 4) {
             if (args[0].equalsIgnoreCase("value")) {
-                System.out.println("test");
                 if (args[3].equals("true") || args[3].equals("false")) {
-                    System.out.println("f");
                     if (plugin.getSettingsManager().getConfig().isSet("dreams." + args[1] + "." + args[2])) {
                         plugin.getSettingsManager().getConfig().set("dreams." + args[1] + "." + args[2], Boolean.parseBoolean(args[3]));
                     } else {
                         sender.sendMessage("There is no setting with this name!");
                     }
                 } else if (args[3].matches("[0-9]+")) {
-                    System.out.println("d");
                     if (plugin.getSettingsManager().getConfig().isSet("dreams." + args[1] + "." + args[2])) {
                         plugin.getSettingsManager().getConfig().set("dreams." + args[1] + "." + args[2], Double.parseDouble(args[3]));
                     } else {
                         sender.sendMessage("There is no setting with this name!");
                     }
                 } else {
-                    System.out.println("k");
                     if (plugin.getSettingsManager().getConfig().isSet("dreams." + args[1] + "." + args[2])) {
                         plugin.getSettingsManager().getConfig().set("dreams." + args[1] + "." + args[2], args[3]);
                     } else {
@@ -93,8 +90,6 @@ public class SetCommand extends BasicCommand {
                 plugin.getSettingsManager().save();
             }
         }
-
-
         return true;
     }
 }

@@ -2,6 +2,7 @@ package com.p000ison.dev.dreamz.util;
 
 import com.p000ison.dev.dreamz.Dream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -18,8 +19,7 @@ public class dUtil {
         List<String> list = new ArrayList<String>();
         for (String dream : getDreams(config)) {
             for (int i = 0; i < config.getInt("dreams." + dream + ".Chance"); i++) {
-                list.add(dream);
-                System.out.println(dream);
+                list.add(dream.toLowerCase());
             }
         }
         for (int i = list.size(); i <= 100; i++) {
@@ -27,12 +27,24 @@ public class dUtil {
                 list.add(null);
             }
         }
-        System.out.println(list.size());
         return list.size() > 100 ? new Dream(null, false) : new Dream(list.get(new Random().nextInt(100)), true);
     }
 
-    public static Set<String> getDreams(FileConfiguration config) {
-        return config.getConfigurationSection("dreams").getKeys(false);
+    public static List<String> getDreams(FileConfiguration config) {
+        List<String> dreams = new ArrayList<String>();
+        for (String dream : config.getConfigurationSection("dreams").getKeys(false)) {
+            dreams.add(dream);
+        }
+        return dreams;
+    }
+
+    public static boolean isDreamAviable(String dream, FileConfiguration config) {
+        for (Iterator<String> it = getDreams(config).iterator(); it.hasNext();) {
+            if (dream.equalsIgnoreCase(it.next())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isBed(Location loc, String dream, FileConfiguration config) {

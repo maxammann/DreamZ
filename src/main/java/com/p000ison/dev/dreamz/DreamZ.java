@@ -1,14 +1,5 @@
 package com.p000ison.dev.dreamz;
 
-import com.p000ison.dev.dreamz.manager.commands.EnterCommand;
-import com.p000ison.dev.dreamz.manager.commands.ReloadCommand;
-import com.p000ison.dev.dreamz.manager.commands.HelpCommand;
-import com.p000ison.dev.dreamz.manager.commands.SetCommand;
-import com.p000ison.dev.dreamz.manager.commands.LeaveCommand;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import com.p000ison.dev.dreamz.listener.DZCustomEventListener;
 import com.p000ison.dev.dreamz.listener.DZEntityListener;
 import com.p000ison.dev.dreamz.listener.DZPlayerListener;
@@ -19,6 +10,10 @@ import com.p000ison.dev.dreamz.manager.SettingsManager;
 import com.p000ison.dev.dreamz.manager.WorldManager;
 import com.p000ison.dev.dreamz.manager.commands.*;
 import com.p000ison.dev.dreamz.util.dUtil;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -39,25 +34,33 @@ public class DreamZ extends JavaPlugin {
     private CommandManager commandManager = new CommandManager();
     public HashMap<Player, Location> RETURN_LOCATIONS = new HashMap<Player, Location>();
     public HashMap<Player, Integer> SCHEDULERS = new HashMap<Player, Integer>();
+    public HashMap<Player, Dream> DREAMS = new HashMap<Player, Dream>();
     public HashMap<Player, Location> DEATH_LOCATIONS = new HashMap<Player, Location>();
     public HashMap<Player, Boolean> RETURN_TELEPORT_TIMER = new HashMap<Player, Boolean>();
 
     @Override
     public void onDisable() {
+        //Clear all the hashmaps
         SCHEDULERS.clear();
         RETURN_LOCATIONS.clear();
         DEATH_LOCATIONS.clear();
         RETURN_TELEPORT_TIMER.clear();
+        DREAMS.clear();
+        //cancel all pending tasks by dreamz
         getServer().getScheduler().cancelTasks(this);
     }
 
     @Override
     public void onEnable() {
         instance = this;
+        
+        //setup everything
         setupMetrics();
         registerCommands();
         registerEvents();
         setupManagers();
+        
+        //hook vault
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             setupPermissions();
         }
@@ -77,12 +80,13 @@ public class DreamZ extends JavaPlugin {
     }
 
     public void setupMetrics() {
-        try {
-            MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        } catch (IOException e) {
-            logger.log(Level.WARNING, String.format("Could not send Plugin-Stats: %s", e.getMessage()));
-        }
+        //Disabled until metrics work again
+//        try {
+//            MetricsLite metrics = new MetricsLite(this);
+//            metrics.start();
+//        } catch (IOException e) {
+//            logger.log(Level.WARNING, String.format("Could not send Plugin-Stats: %s", e.getMessage()));
+//        }
     }
 
     private void registerEvents() {

@@ -1,6 +1,7 @@
 package com.p000ison.dev.dreamz;
 
 import com.p000ison.dev.dreamz.manager.WorldManager;
+import com.p000ison.dev.dreamz.util.dUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -13,15 +14,23 @@ public class Dream {
     private String dream;
     private World dreamworld;
     private DreamZ plugin;
+    private String dreamType;
     private boolean OneHundredPercent;
 
     public Dream(String dream, boolean onehundret) {
-        this.OneHundredPercent = onehundret;
-        this.dream = dream;
         this.plugin = DreamZ.getPlugin();
-        if (dream != null) {
-            this.dreamworld = Bukkit.getWorld(dream);
+        this.OneHundredPercent = onehundret;
+        for (String dreams : dUtil.getDreams(plugin.getSettingsManager().getConfig())) {
+            if (dream.equalsIgnoreCase(dreams)) {
+                this.dream = dreams;
+            }
         }
+        for (World world : Bukkit.getWorlds()) {
+            if (world.getName().equalsIgnoreCase(dream)) {
+                this.dreamworld = world;
+            }
+        }
+        this.dreamType = plugin.getSettingsManager().getConfig().getString("dreams." + dream + ".DreamType", "DEFAULT");
     }
 
     public void applyWeather() {
@@ -68,5 +77,19 @@ public class Dream {
      */
     public void setOneHundredPercent(boolean OneHundredPercent) {
         this.OneHundredPercent = OneHundredPercent;
+    }
+
+    /**
+     * @return the dreamType
+     */
+    public String getDreamType() {
+        return dreamType;
+    }
+
+    /**
+     * @param dreamType the dreamType to set
+     */
+    public void setDreamType(String dreamType) {
+        this.dreamType = dreamType;
     }
 }

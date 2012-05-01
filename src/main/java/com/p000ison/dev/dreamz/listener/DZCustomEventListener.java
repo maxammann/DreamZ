@@ -36,7 +36,6 @@ public class DZCustomEventListener implements Listener {
         }
 
         if (dream != null && dream.getDream() != null && dream.getDreamWorld() != null && dream.isOneHundredPercent()) {
-            System.out.println(plugin.getSettingsManager().getConfig().getBoolean("dreams." + dream.getDream() + ".Spawning.UseRandomSpawn"));
             if (plugin.getSettingsManager().getConfig().getBoolean("dreams." + dream.getDream() + ".Spawning.UseRandomSpawn")) {
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
@@ -44,10 +43,9 @@ public class DZCustomEventListener implements Listener {
                     public void run() {
                         Location loc = sUtil.randomSpawn(plugin.getSettingsManager().getConfig(), dream.getDreamWorld(), plugin.getSettingsManager().getPreventSpawnOn());
                         if (loc != null) {
-                            System.out.println(loc.toString());
                             player.teleport(loc);
                         } else {
-                            player.sendMessage("No randomspawn found!");
+                            plugin.getLogger().log(Level.INFO, String.format("No Random-Spawn found for %s.", player.getName()));
                         }
                         player.setNoDamageTicks(40);
                     }
@@ -57,7 +55,7 @@ public class DZCustomEventListener implements Listener {
                 player.setNoDamageTicks(40);
             }
             player.sendMessage(Util.color(String.format(plugin.getSettingsManager().getEnterDreamMessage(), dream.getDream())));
-            System.out.println(plugin.getSettingsManager().getConfig().getBoolean("dreams." + dream.getDream() + ".UsingDuration"));
+            
             if (plugin.getSettingsManager().getConfig().getBoolean("dreams." + dream.getDream() + ".UsingDuration")) {
                 plugin.SCHEDULERS.put(player, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
@@ -65,7 +63,7 @@ public class DZCustomEventListener implements Listener {
                     public void run() {
                         plugin.getServer().getPluginManager().callEvent(new DreamZPlayerDreamLeaveEvent(player, DreamLeaveType.NORMAL));
                         if (plugin.getSettingsManager().isDebugging() == true) {
-                            plugin.getLogger().log(Level.INFO, "Player teleported back after the duration expired.");
+                            plugin.getLogger().log(Level.INFO, String.format("%s teleported back after the duration expired.", player.getName()));
                         }
                     }
                 }, (plugin.getSettingsManager().getConfig().getLong("dreams." + dream.getDream() + ".Duration") * 20)));
@@ -83,18 +81,13 @@ public class DZCustomEventListener implements Listener {
             return;
         }
 
-        if (plugin.SCHEDULERS.containsKey(player)) {
-            plugin.getServer().getScheduler().cancelTask(plugin.SCHEDULERS.get(player));
-            plugin.SCHEDULERS.remove(player);
-        }
-        
-        if (plugin.getSettingsManager().isDebugging() == true) {
-            plugin.getLogger().log(Level.INFO, String.format("Player left dream: %s", player.getWorld().getName()));
-        }
-        
-        if (player.isOnline()) {
-            player.sendMessage(Util.color(String.format(plugin.getSettingsManager().getLeaveDreamMessage(), player.getWorld().getName())));
+        if (player.isOnline() && plugin.getDreamManager().isInDream(player)) {
+            player.sendMessage(Util.color(String.format(plugin.getSettingsManager().getLeaveDreamMessage(), /*plugin.getDreamManager().getActiveDream(player).getDream()*/ player.getWorld().getName())));
 
+            //keep order: first remove the player out of the map, then teleport and then remove the player out of the scheduler
+            if (plugin.DREAMS.containsKey(player)) {
+                plugin.DREAMS.remove(player);
+            }
             if (plugin.RETURN_LOCATIONS.containsKey(player)) {
                 player.teleport(plugin.RETURN_LOCATIONS.get(player));
             } else {
@@ -115,7 +108,9 @@ public class DZCustomEventListener implements Listener {
         }
 
 
-
-
+        if (plugin.SCHEDULERS.containsKey(player)) {
+            plugin.getServer().getScheduler().cancelTask(plugin.SCHEDULERS.get(player));
+            plugin.SCHEDULERS.remove(player);
+        }
     }
 }
